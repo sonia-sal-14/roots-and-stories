@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { transcribeAndTranslate, blobToBase64 } from '@/lib/api'
 import { PromptBrowser } from '@/components/PromptBrowser'
+import { AppHeader } from '@/components/AppHeader'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Mic, Square, ArrowLeft, Sparkles, Play, Pause } from 'lucide-react'
+import { Mic, Square, Sparkles, Play, Pause } from 'lucide-react'
 
 const LANGUAGES = [
   'English', 'Spanish', 'Hindi', 'Mandarin', 'Arabic',
@@ -154,19 +155,7 @@ export default function RecordStory() {
 
   return (
     <div className="min-h-screen bg-[#FDF6EE] flex flex-col">
-      {/* Header */}
-      <div className="bg-white border-b border-[#5C3D2E]/10 px-4 py-4 flex items-center gap-3">
-        <button
-          onClick={() => navigate('/library')}
-          className="text-[#5C3D2E] hover:opacity-70 transition-opacity"
-        >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-        <div>
-          <h1 className="font-bold text-[#5C3D2E] text-lg">Record a story</h1>
-          <p className="text-xs text-gray-400">Speak in any language</p>
-        </div>
-      </div>
+      <AppHeader showBack backTo="/library" title="Record a story" subtitle="Speak in any language" />
 
       <div className="flex-1 flex flex-col items-center justify-start px-6 py-8 max-w-lg mx-auto w-full">
 

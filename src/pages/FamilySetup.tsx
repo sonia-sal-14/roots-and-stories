@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/AuthContext'
+import { AppHeader } from '@/components/AppHeader'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { BookOpen, Users, UserPlus } from 'lucide-react'
+import { Users, UserPlus } from 'lucide-react'
 
 const DEFAULT_CHAPTERS = [
   { title: 'Childhood', sort_order: 0 },
@@ -156,11 +157,7 @@ export default function FamilySetup() {
 
   return (
     <div className="min-h-screen bg-[#FDF6EE] flex flex-col">
-      {/* Header */}
-      <div className="flex items-center px-6 pt-8 pb-4">
-        <BookOpen className="w-7 h-7 text-[#C8860A] mr-2" />
-        <span className="text-xl font-bold text-[#5C3D2E]">Roots & Stories</span>
-      </div>
+      <AppHeader title="Your family" subtitle="Step 2 of 2" />
 
       <div className="flex-1 flex flex-col items-center justify-center px-6 pb-12">
         <div className="w-full max-w-md">

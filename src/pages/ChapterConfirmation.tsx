@@ -3,11 +3,12 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/AuthContext'
 import type { Chapter } from '@/types/database'
+import { AppHeader } from '@/components/AppHeader'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ArrowLeft, BookOpen } from 'lucide-react'
+import { BookOpen } from 'lucide-react'
 
 interface LocationState {
   title: string
@@ -113,16 +114,7 @@ export default function ChapterConfirmation() {
 
   return (
     <div className="min-h-screen bg-[#FDF6EE] flex flex-col">
-      {/* Header */}
-      <div className="bg-white border-b border-[#5C3D2E]/10 px-4 py-4 flex items-center gap-3">
-        <button onClick={() => navigate('/record')} className="text-[#5C3D2E] hover:opacity-70 transition-opacity">
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-        <div>
-          <h1 className="font-bold text-[#5C3D2E] text-lg">Review your story</h1>
-          <p className="text-xs text-gray-400">Check the transcript and choose a chapter</p>
-        </div>
-      </div>
+      <AppHeader showBack backTo="/record" title="Review your story" subtitle="Check the transcript and choose a chapter" />
 
       <div className="flex-1 max-w-lg mx-auto w-full px-4 py-6 space-y-5">
 

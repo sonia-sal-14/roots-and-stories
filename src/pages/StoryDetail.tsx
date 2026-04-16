@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import type { Story, FamilyMember, Chapter } from '@/types/database'
+import { AppHeader } from '@/components/AppHeader'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import {
-  ArrowLeft, Play, Pause, BookOpen,
+  Play, Pause, ArrowLeft,
   Calendar, User, Mic, Globe,
 } from 'lucide-react'
 
@@ -115,26 +116,12 @@ export default function StoryDetail() {
 
   return (
     <div className="min-h-screen bg-[#FDF6EE] flex flex-col">
-      {/* Header */}
-      <div className="bg-white border-b border-[#5C3D2E]/10 px-4 py-4 flex items-center gap-3 sticky top-0 z-10 shadow-sm">
-        <button
-          onClick={() => navigate('/library')}
-          className="text-[#5C3D2E] hover:opacity-70 transition-opacity flex-shrink-0"
-        >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-        <div className="flex-1 min-w-0">
-          <h1 className="font-bold text-[#5C3D2E] text-lg leading-tight truncate">
-            {story.title}
-          </h1>
-          {chapter && (
-            <div className="flex items-center gap-1 mt-0.5">
-              <BookOpen className="w-3 h-3 text-[#C8860A]" />
-              <span className="text-xs text-[#C8860A] font-semibold">{chapter.title}</span>
-            </div>
-          )}
-        </div>
-      </div>
+      <AppHeader
+        showBack
+        backTo="/library"
+        title={story.title}
+        subtitle={chapter ? `${chapter.title}` : undefined}
+      />
 
       <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-6 space-y-6">
 
