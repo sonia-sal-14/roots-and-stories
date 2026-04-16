@@ -36,7 +36,8 @@ export default function Library() {
         .from('family_members')
         .select('*')
         .eq('user_id', user.id)
-        .single()
+        .limit(1)
+        .maybeSingle()
 
       if (memberError || !memberData) {
         // Show error rather than redirect (prevents redirect loop)
