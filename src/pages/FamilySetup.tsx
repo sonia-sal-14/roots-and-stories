@@ -156,7 +156,7 @@ export default function FamilySetup() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDF6EE] flex flex-col">
+    <div className="min-h-screen bg-[#3B2B3A] flex flex-col">
       <AppHeader title="Your family" subtitle="Step 2 of 2" />
 
       <div className="flex-1 flex flex-col items-center justify-center px-6 pb-12">
@@ -166,36 +166,36 @@ export default function FamilySetup() {
           {mode === 'choose' && (
             <div className="text-center">
               <div className="text-5xl mb-6">🏡</div>
-              <h2 className="text-3xl font-bold text-[#5C3D2E] mb-3">Your family space</h2>
-              <p className="text-gray-500 mb-10">Create a new space for your family, or join one that already exists.</p>
+              <h2 className="text-3xl font-bold text-[#F5E9E0] mb-3">Your family space</h2>
+              <p className="text-[#D5D9EC]/60 mb-10">Create a new space for your family, or join one that already exists.</p>
 
               <div className="flex flex-col gap-4">
                 <button
                   onClick={() => setMode('create')}
-                  className="bg-white border-2 border-[#5C3D2E]/20 rounded-2xl p-6 text-left hover:border-[#5C3D2E] hover:shadow-md transition-all group"
+                  className="bg-[#F5E9E0] border-2 border-transparent rounded-2xl p-6 text-left hover:border-[#D95D39]/40 hover:shadow-md transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-[#5C3D2E] rounded-xl flex items-center justify-center group-hover:bg-[#4a3124] transition-colors">
+                    <div className="w-12 h-12 bg-[#D95D39] rounded-xl flex items-center justify-center group-hover:bg-[#B84A2A] transition-colors">
                       <Users className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <div className="font-bold text-[#5C3D2E] text-lg">Create a family</div>
-                      <div className="text-gray-500 text-sm">Start a new space and invite others</div>
+                      <div className="font-bold text-[#3B2B3A] text-lg">Create a family</div>
+                      <div className="text-[#3B2B3A]/50 text-sm">Start a new space and invite others</div>
                     </div>
                   </div>
                 </button>
 
                 <button
                   onClick={() => setMode('join')}
-                  className="bg-white border-2 border-[#5C3D2E]/20 rounded-2xl p-6 text-left hover:border-[#C8860A] hover:shadow-md transition-all group"
+                  className="bg-[#F5E9E0] border-2 border-transparent rounded-2xl p-6 text-left hover:border-[#D95D39]/40 hover:shadow-md transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-[#C8860A] rounded-xl flex items-center justify-center group-hover:bg-[#a36e08] transition-colors">
+                    <div className="w-12 h-12 bg-[#3B3B58] rounded-xl flex items-center justify-center group-hover:bg-[#D95D39] transition-colors">
                       <UserPlus className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <div className="font-bold text-[#5C3D2E] text-lg">Join a family</div>
-                      <div className="text-gray-500 text-sm">Enter an invite code from a family member</div>
+                      <div className="font-bold text-[#3B2B3A] text-lg">Join a family</div>
+                      <div className="text-[#3B2B3A]/50 text-sm">Enter an invite code from a family member</div>
                     </div>
                   </div>
                 </button>
@@ -205,13 +205,13 @@ export default function FamilySetup() {
 
           {/* Create family */}
           {mode === 'create' && (
-            <div className="bg-white rounded-2xl shadow-sm border border-[#5C3D2E]/10 p-8">
-              <button onClick={() => { setMode('choose'); setError('') }} className="text-[#5C3D2E] text-sm mb-4 hover:underline">← Back</button>
-              <h2 className="text-2xl font-bold text-[#5C3D2E] mb-2">Name your family</h2>
-              <p className="text-gray-500 mb-6">Choose something warm and recognisable — like "The Garcia Family" or "Nana's Stories".</p>
+            <div className="bg-[#F5E9E0] rounded-2xl shadow-lg p-8">
+              <button onClick={() => { setMode('choose'); setError('') }} className="text-[#D95D39] text-sm mb-4 hover:underline">← Back</button>
+              <h2 className="text-2xl font-bold text-[#3B2B3A] mb-2">Name your family</h2>
+              <p className="text-[#3B2B3A]/50 mb-6">Choose something warm and recognisable — like "The Garcia Family" or "Nana's Stories".</p>
 
               <div className="space-y-2 mb-6">
-                <Label htmlFor="familyName">Family name</Label>
+                <Label htmlFor="familyName" className="text-[#3B2B3A]">Family name</Label>
                 <Input
                   id="familyName"
                   placeholder='e.g. "The Martinez Family"'
@@ -240,13 +240,13 @@ export default function FamilySetup() {
 
           {/* Join family */}
           {mode === 'join' && (
-            <div className="bg-white rounded-2xl shadow-sm border border-[#5C3D2E]/10 p-8">
-              <button onClick={() => { setMode('choose'); setError('') }} className="text-[#5C3D2E] text-sm mb-4 hover:underline">← Back</button>
-              <h2 className="text-2xl font-bold text-[#5C3D2E] mb-2">Join your family</h2>
-              <p className="text-gray-500 mb-6">Ask a family member for their 6-character invite code and enter it below.</p>
+            <div className="bg-[#F5E9E0] rounded-2xl shadow-lg p-8">
+              <button onClick={() => { setMode('choose'); setError('') }} className="text-[#D95D39] text-sm mb-4 hover:underline">← Back</button>
+              <h2 className="text-2xl font-bold text-[#3B2B3A] mb-2">Join your family</h2>
+              <p className="text-[#3B2B3A]/50 mb-6">Ask a family member for their 6-character invite code and enter it below.</p>
 
               <div className="space-y-2 mb-6">
-                <Label htmlFor="inviteCode">Invite code</Label>
+                <Label htmlFor="inviteCode" className="text-[#3B2B3A]">Invite code</Label>
                 <Input
                   id="inviteCode"
                   placeholder="e.g. AB3X7K"
@@ -264,7 +264,7 @@ export default function FamilySetup() {
                 </div>
               )}
 
-              <Button size="lg" variant="accent" className="w-full text-lg" onClick={joinFamily} disabled={loading}>
+              <Button size="lg" className="w-full text-lg" onClick={joinFamily} disabled={loading}>
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />

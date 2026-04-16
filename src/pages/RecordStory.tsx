@@ -160,7 +160,13 @@ export default function RecordStory() {
   const isProcessing = processingState !== 'idle'
 
   return (
-    <div className="min-h-screen bg-[#FDF6EE] flex flex-col">
+    <div className="min-h-screen bg-[#3B2B3A] flex flex-col">
+      <style>{`
+        @keyframes wave {
+          from { transform: scaleY(0.4); }
+          to { transform: scaleY(1); }
+        }
+      `}</style>
       <AppHeader showBack backTo="/library" title="Record a story" subtitle="Speak in any language" />
 
       <div className="flex-1 flex flex-col items-center justify-start px-6 py-8 max-w-lg mx-auto w-full">
@@ -169,46 +175,50 @@ export default function RecordStory() {
         {recordingState === 'idle' && (
           <div className="flex flex-col items-center w-full">
             <div className="text-center mb-10">
-              <p className="text-gray-500 text-lg">Press the button and start speaking.</p>
-              <p className="text-gray-400 text-sm mt-1">Speak naturally — we'll handle the rest.</p>
+              <p className="text-[#F5E9E0] text-lg">Press the button and start speaking.</p>
+              <p className="text-[#D5D9EC]/60 text-sm mt-1">Speak naturally — we'll handle the rest.</p>
             </div>
 
             <button
               onClick={startRecording}
-              className="w-40 h-40 rounded-full bg-[#5C3D2E] shadow-2xl flex items-center justify-center hover:bg-[#4a3124] active:scale-95 transition-all mb-10 group"
+              className="w-40 h-40 rounded-full bg-[#D95D39] shadow-[0_8px_32px_rgba(217,93,57,0.5)] flex items-center justify-center hover:bg-[#B84A2A] active:scale-95 transition-all mb-10 group"
             >
               <Mic className="w-16 h-16 text-white group-hover:scale-110 transition-transform" />
             </button>
 
-            <p className="text-[#5C3D2E] font-semibold text-lg mb-8">Press to Record</p>
+            <p className="text-[#D95D39] font-semibold text-lg mb-8">Press to Record</p>
 
             {/* Language selector */}
-            <div className="w-full space-y-2 mb-4">
-              <Label>I will speak in...</Label>
-              <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {LANGUAGES.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
-                </SelectContent>
-              </Select>
+            <div className="w-full bg-[#F5E9E0]/08 rounded-2xl p-4 mb-4">
+              <div className="space-y-2">
+                <Label className="text-[#F5E9E0]">I will speak in...</Label>
+                <Select value={language} onValueChange={setLanguage}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {LANGUAGES.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {/* Title input */}
-            <div className="w-full space-y-2 mb-4">
-              <Label>Story title (optional)</Label>
-              <Input
-                placeholder="Leave blank — AI will suggest one"
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-              />
+            <div className="w-full bg-[#F5E9E0]/08 rounded-2xl p-4 mb-4">
+              <div className="space-y-2">
+                <Label className="text-[#F5E9E0]">Story title (optional)</Label>
+                <Input
+                  placeholder="Leave blank — AI will suggest one"
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                />
+              </div>
             </div>
 
             {/* Prompt browser */}
             <button
               onClick={() => setShowPrompts(true)}
-              className="flex items-center gap-2 text-[#C8860A] font-semibold text-base hover:opacity-75 transition-opacity"
+              className="flex items-center gap-2 text-[#D95D39] font-semibold text-base hover:opacity-75 transition-opacity"
             >
               <Sparkles className="w-5 h-5" />
               Need inspiration? ✨
@@ -220,30 +230,38 @@ export default function RecordStory() {
         {recordingState === 'recording' && (
           <div className="flex flex-col items-center w-full">
             <div className="text-center mb-10">
-              <p className="text-[#5C3D2E] font-semibold text-lg">Recording...</p>
-              <p className="text-gray-400 text-sm mt-1">Speak naturally. Tap stop when done.</p>
+              <p className="text-[#F5E9E0] font-semibold text-lg">Recording...</p>
+              <p className="text-[#D5D9EC]/60 text-sm mt-1">Speak naturally. Tap stop when done.</p>
             </div>
 
-            {/* Pulsing mic */}
-            <div className="relative mb-10">
-              <div className="absolute inset-0 rounded-full bg-red-400 animate-ping opacity-25" />
-              <div className="w-40 h-40 rounded-full bg-red-500 shadow-2xl flex items-center justify-center relative">
-                <Mic className="w-16 h-16 text-white" />
-              </div>
+            {/* Animated waveform bars */}
+            <div className="flex items-center gap-1.5 mb-10" style={{height: '80px'}}>
+              {[0.4, 0.7, 1, 0.6, 0.9, 0.5, 0.8, 0.45, 0.75, 1, 0.55, 0.85, 0.4].map((h, i) => (
+                <div
+                  key={i}
+                  className="w-2 rounded-full bg-[#D95D39]"
+                  style={{
+                    height: `${h * 64}px`,
+                    animation: `wave ${0.8 + (i % 4) * 0.15}s ease-in-out infinite alternate`,
+                    animationDelay: `${i * 0.07}s`,
+                    opacity: 0.7 + h * 0.3,
+                  }}
+                />
+              ))}
             </div>
 
             {/* Timer */}
-            <div className="text-5xl font-mono font-bold text-[#5C3D2E] mb-10">
+            <div className="text-5xl font-mono font-bold text-[#F5E9E0] mb-10">
               {formatTime(elapsed)}
             </div>
 
             <button
               onClick={stopRecording}
-              className="w-20 h-20 rounded-full bg-white border-4 border-red-500 flex items-center justify-center hover:bg-red-50 transition-colors shadow-lg"
+              className="w-20 h-20 rounded-full bg-[#F5E9E0]/10 border-4 border-[#D95D39] flex items-center justify-center hover:bg-[#F5E9E0]/20 transition-colors shadow-lg"
             >
-              <Square className="w-8 h-8 text-red-500 fill-current" />
+              <Square className="w-8 h-8 text-[#D95D39] fill-current" />
             </button>
-            <p className="text-gray-400 text-sm mt-4">Tap to stop</p>
+            <p className="text-[#D5D9EC]/60 text-sm mt-4">Tap to stop</p>
           </div>
         )}
 
@@ -251,27 +269,27 @@ export default function RecordStory() {
         {recordingState === 'preview' && !isProcessing && (
           <div className="flex flex-col items-center w-full">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <div className="w-16 h-16 bg-[#D95D39]/10 rounded-full flex items-center justify-center mx-auto mb-3">
                 <span className="text-3xl">✅</span>
               </div>
-              <h2 className="text-xl font-bold text-[#5C3D2E]">Recording complete!</h2>
-              <p className="text-gray-400 text-sm mt-1">{formatTime(elapsed)} recorded</p>
+              <h2 className="text-xl font-bold text-[#F5E9E0]">Recording complete!</h2>
+              <p className="text-[#D5D9EC]/60 text-sm mt-1">{formatTime(elapsed)} recorded</p>
             </div>
 
             {/* Audio preview */}
             {audioUrl && (
-              <div className="w-full bg-white rounded-2xl border border-[#5C3D2E]/10 p-5 mb-6 flex items-center gap-4">
+              <div className="w-full bg-[#F5E9E0] rounded-2xl border border-[#3B2B3A]/10 p-5 mb-6 flex items-center gap-4">
                 <button
                   onClick={togglePlayback}
-                  className="w-12 h-12 rounded-full bg-[#5C3D2E] flex items-center justify-center flex-shrink-0 hover:bg-[#4a3124] transition-colors"
+                  className="w-12 h-12 rounded-full bg-[#3B2B3A] flex items-center justify-center flex-shrink-0 hover:bg-[#D95D39] transition-colors"
                 >
                   {isPlaying
                     ? <Pause className="w-5 h-5 text-white fill-current" />
                     : <Play className="w-5 h-5 text-white fill-current ml-0.5" />}
                 </button>
                 <div className="flex-1">
-                  <div className="text-sm font-medium text-[#5C3D2E]">Preview your recording</div>
-                  <div className="text-xs text-gray-400">{formatTime(elapsed)} · {language}</div>
+                  <div className="text-sm font-medium text-[#3B2B3A]">Preview your recording</div>
+                  <div className="text-xs text-[#3B2B3A]/60">{formatTime(elapsed)} · {language}</div>
                 </div>
                 <audio
                   ref={audioRef}
@@ -284,24 +302,28 @@ export default function RecordStory() {
 
             {/* Language & Title */}
             <div className="w-full space-y-4 mb-6">
-              <div className="space-y-2">
-                <Label>Language spoken</Label>
-                <Select value={language} onValueChange={setLanguage}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {LANGUAGES.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+              <div className="bg-[#F5E9E0]/08 rounded-2xl p-4">
+                <div className="space-y-2">
+                  <Label className="text-[#F5E9E0]">Language spoken</Label>
+                  <Select value={language} onValueChange={setLanguage}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {LANGUAGES.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label>Story title (optional)</Label>
-                <Input
-                  placeholder="Leave blank — AI will suggest one"
-                  value={title}
-                  onChange={e => setTitle(e.target.value)}
-                />
+              <div className="bg-[#F5E9E0]/08 rounded-2xl p-4">
+                <div className="space-y-2">
+                  <Label className="text-[#F5E9E0]">Story title (optional)</Label>
+                  <Input
+                    placeholder="Leave blank — AI will suggest one"
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
 
@@ -316,7 +338,7 @@ export default function RecordStory() {
             </Button>
             <button
               onClick={reRecord}
-              className="text-sm text-gray-400 hover:text-[#5C3D2E] transition-colors"
+              className="text-sm text-[#F5E9E0]/50 hover:text-[#F5E9E0] transition-colors"
             >
               Re-record
             </button>
@@ -326,11 +348,11 @@ export default function RecordStory() {
         {/* ── PROCESSING ── */}
         {isProcessing && (
           <div className="flex flex-col items-center justify-center w-full flex-1">
-            <div className="w-20 h-20 border-4 border-[#5C3D2E] border-t-transparent rounded-full animate-spin mb-8" />
-            <p className="text-xl font-semibold text-[#5C3D2E] text-center">
+            <div className="w-20 h-20 border-4 border-[#D95D39] border-t-transparent rounded-full animate-spin mb-8" />
+            <p className="text-xl font-semibold text-[#F5E9E0] text-center">
               {PROCESSING_MESSAGES[processingState]}
             </p>
-            <p className="text-gray-400 text-sm mt-3">This takes about 15–30 seconds.</p>
+            <p className="text-[#D5D9EC]/60 text-sm mt-3">This takes about 15–30 seconds.</p>
           </div>
         )}
 
