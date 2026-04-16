@@ -39,8 +39,9 @@ export default function Library() {
         .single()
 
       if (memberError || !memberData) {
-        // User has no family yet — send to setup
-        navigate('/family-setup')
+        // Show error rather than redirect (prevents redirect loop)
+        setError('no-family')
+        setLoading(false)
         return
       }
 
@@ -117,6 +118,24 @@ export default function Library() {
         <div className="text-center">
           <div className="w-10 h-10 border-4 border-[#5C3D2E] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-[#5C3D2E] font-medium">Loading your library...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error === 'no-family') {
+    return (
+      <div className="min-h-screen bg-[#FDF6EE] flex flex-col items-center justify-center px-6">
+        <div className="text-center max-w-sm">
+          <div className="text-5xl mb-4">🏡</div>
+          <h2 className="text-2xl font-bold text-[#5C3D2E] mb-2">No family found</h2>
+          <p className="text-gray-500 mb-6">You're not linked to a family group yet. Create one or join an existing one.</p>
+          <Button size="lg" className="w-full mb-3" onClick={() => navigate('/family-setup')}>
+            Set up your family
+          </Button>
+          <button onClick={handleSignOut} className="text-sm text-gray-400 hover:text-gray-600">
+            Sign out
+          </button>
         </div>
       </div>
     )
