@@ -31,6 +31,7 @@ export interface Database {
           invite_code?: string
           created_by?: string | null
         }
+        Relationships: []
       }
       family_members: {
         Row: {
@@ -60,6 +61,7 @@ export interface Database {
           native_language?: string
           photo_url?: string | null
         }
+        Relationships: []
       }
       chapters: {
         Row: {
@@ -86,6 +88,7 @@ export interface Database {
           sort_order?: number
           created_by?: string | null
         }
+        Relationships: []
       }
       stories: {
         Row: {
@@ -130,6 +133,7 @@ export interface Database {
           ai_suggested_chapter?: string | null
           sort_order?: number
         }
+        Relationships: []
       }
       story_prompts: {
         Row: {
@@ -150,17 +154,13 @@ export interface Database {
           category?: string
           prompt_text?: string
         }
+        Relationships: []
       }
     }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      [_ in never]: never
-    }
-    Enums: {
-      [_ in never]: never
-    }
+    Views: Record<string, never>
+    Functions: Record<string, never>
+    Enums: Record<string, never>
+    CompositeTypes: Record<string, never>
   }
 }
 
