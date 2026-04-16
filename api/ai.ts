@@ -40,7 +40,7 @@ async function transcribeAndTranslate(
         role: 'user',
         content: [
           {
-            type: 'document',
+            type: 'audio',
             source: {
               type: 'base64',
               media_type: mimeType as 'audio/webm' | 'audio/mp4' | 'audio/mpeg' | 'audio/wav' | 'audio/ogg',
