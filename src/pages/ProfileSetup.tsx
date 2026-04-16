@@ -9,7 +9,16 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Camera } from 'lucide-react'
 
-const LANGUAGES = ['English', 'Spanish', 'Hindi', 'Mandarin', 'Arabic', 'French', 'Tagalog', 'Portuguese', 'Other']
+const LANGUAGES = [
+  // Global
+  'English', 'Arabic', 'French', 'Mandarin', 'Portuguese', 'Spanish',
+  // South & Southeast Asian
+  'Bengali', 'Gujarati', 'Hindi', 'Marathi', 'Punjabi', 'Tamil', 'Telugu', 'Tagalog',
+  // East Asian
+  'Japanese', 'Korean',
+  // Other
+  'Other',
+]
 
 export default function ProfileSetup() {
   const navigate = useNavigate()
