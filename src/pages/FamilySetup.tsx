@@ -29,8 +29,12 @@ export default function FamilySetup() {
   const [error, setError] = useState('')
 
   // If user already has a family, go straight to library
+  // But only do this check once, not in a loop
   useEffect(() => {
     if (!user) return
+    // Don't redirect if we came from library (prevents loop)
+    const fromLibrary = document.referrer.includes('/library')
+    if (fromLibrary) return
     supabase
       .from('family_members')
       .select('id')
