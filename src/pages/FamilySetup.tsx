@@ -45,36 +45,38 @@ export default function FamilySetup() {
       const profile = getPendingProfile()
       if (!profile) throw new Error('Profile data missing. Please go back and try again.')
 
-      // 1. Create family group
+      // Generate group ID client-side so we don't need to read it back
+      // (SELECT RLS blocks reading before we're a member)
+      const groupId = crypto.randomUUID()
       const code = generateInviteCode()
-      const { data: group, error: groupError } = await supabase
+
+      // 1. Create family group
+      const { error: groupError } = await supabase
         .from('family_groups')
-        .insert({ name: familyName.trim(), invite_code: code, created_by: user.id })
-        .select()
-        .single()
-      if (groupError) throw groupError
+        .insert({ id: groupId, name: familyName.trim(), invite_code: code, created_by: user.id })
+      if (groupError) throw new Error(groupError.message)
 
       // 2. Insert family member
       const { error: memberError } = await supabase
         .from('family_members')
         .insert({
           user_id: user.id,
-          family_group_id: group.id,
+          family_group_id: groupId,
           display_name: profile.display_name,
           native_language: profile.native_language,
           photo_url: profile.photo_url,
         })
-      if (memberError) throw memberError
+      if (memberError) throw new Error(memberError.message)
 
       // 3. Create default chapters
       const { error: chaptersError } = await supabase
         .from('chapters')
         .insert(DEFAULT_CHAPTERS.map(ch => ({
           ...ch,
-          family_group_id: group.id,
+          family_group_id: groupId,
           created_by: user.id,
         })))
-      if (chaptersError) throw chaptersError
+      if (chaptersError) throw new Error(chaptersError.message)
 
       localStorage.removeItem('pending_profile')
       navigate('/library')
