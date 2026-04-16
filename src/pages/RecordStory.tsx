@@ -10,8 +10,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Mic, Square, Sparkles, Play, Pause } from 'lucide-react'
 
 const LANGUAGES = [
-  'English', 'Spanish', 'Hindi', 'Mandarin', 'Arabic',
-  'French', 'Tagalog', 'Portuguese', 'Other',
+  // Global
+  'English', 'Arabic', 'French', 'Mandarin', 'Portuguese', 'Spanish',
+  // South & Southeast Asian
+  'Bengali', 'Gujarati', 'Hindi', 'Marathi', 'Punjabi', 'Tamil', 'Telugu', 'Tagalog',
+  // East Asian
+  'Japanese', 'Korean',
+  // Other
+  'Other',
 ]
 
 type RecordingState = 'idle' | 'recording' | 'preview'
