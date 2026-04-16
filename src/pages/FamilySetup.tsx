@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/AuthContext'
@@ -28,6 +28,19 @@ export default function FamilySetup() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  // If user already has a family, go straight to library
+  useEffect(() => {
+    if (!user) return
+    supabase
+      .from('family_members')
+      .select('id')
+      .eq('user_id', user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) navigate('/library', { replace: true })
+      })
+  }, [user])
+
   const getPendingProfile = () => {
     const raw = localStorage.getItem('pending_profile')
     if (!raw) return null
@@ -43,7 +56,10 @@ export default function FamilySetup() {
 
     try {
       const profile = getPendingProfile()
-      if (!profile) throw new Error('Profile data missing. Please go back and try again.')
+      if (!profile) {
+        navigate('/profile-setup', { replace: true })
+        return
+      }
 
       // Generate group ID client-side so we don't need to read it back
       // (SELECT RLS blocks reading before we're a member)
@@ -97,7 +113,10 @@ export default function FamilySetup() {
 
     try {
       const profile = getPendingProfile()
-      if (!profile) throw new Error('Profile data missing. Please go back and try again.')
+      if (!profile) {
+        navigate('/profile-setup', { replace: true })
+        return
+      }
 
       // Look up family group
       const { data: group, error: groupError } = await supabase
