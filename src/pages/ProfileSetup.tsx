@@ -69,41 +69,41 @@ export default function ProfileSetup() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDF6EE] flex flex-col">
+    <div className="min-h-screen bg-[#3B2B3A] flex flex-col">
       <AppHeader title="Tell us about you" subtitle="Step 1 of 2" />
 
       <div className="flex-1 flex flex-col justify-center px-6 py-8 max-w-sm mx-auto w-full">
         <div className="mb-8">
-          <h2 className="text-3xl font-black text-[#5C3D2E] tracking-tight">Your profile</h2>
-          <p className="text-gray-400 mt-1">This is how your family will see you.</p>
+          <h2 className="text-3xl font-black text-[#F5E9E0] tracking-tight">Your profile</h2>
+          <p className="text-[#D5D9EC]/60 mt-1">This is how your family will see you.</p>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#5C3D2E]/8">
+        <div className="bg-[#F5E9E0] rounded-3xl p-6 shadow-lg">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Photo */}
             <div className="flex flex-col items-center pb-2">
               <div className="relative">
-                <div className="w-24 h-24 rounded-3xl bg-[#FDF6EE] border-2 border-dashed border-[#5C3D2E]/30 flex items-center justify-center overflow-hidden">
+                <div className="w-24 h-24 rounded-3xl bg-[#3B2B3A]/10 border-2 border-dashed border-[#D95D39]/30 flex items-center justify-center overflow-hidden">
                   {photoPreview
                     ? <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
-                    : <Camera className="w-8 h-8 text-[#5C3D2E]/30" />}
+                    : <Camera className="w-8 h-8 text-[#3B2B3A]/30" />}
                 </div>
-                <label htmlFor="photo" className="absolute -bottom-1 -right-1 w-8 h-8 bg-[#C8860A] rounded-xl flex items-center justify-center cursor-pointer hover:bg-[#a36e08] transition-colors shadow">
+                <label htmlFor="photo" className="absolute -bottom-1 -right-1 w-8 h-8 bg-[#D95D39] rounded-xl flex items-center justify-center cursor-pointer hover:bg-[#B84A2A] transition-colors shadow">
                   <Camera className="w-4 h-4 text-white" />
                 </label>
                 <input id="photo" type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
               </div>
-              <p className="text-xs text-gray-400 mt-2">Optional photo</p>
+              <p className="text-xs text-[#3B2B3A]/50 mt-2">Optional photo</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="displayName">Your name</Label>
+              <Label htmlFor="displayName" className="text-[#3B2B3A]">Your name</Label>
               <Input id="displayName" placeholder='e.g. "Grandma Rosa"' value={displayName}
                 onChange={e => setDisplayName(e.target.value)} required />
             </div>
 
             <div className="space-y-2">
-              <Label>Your native language</Label>
+              <Label className="text-[#3B2B3A]">Your native language</Label>
               <Select value={language} onValueChange={setLanguage}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>

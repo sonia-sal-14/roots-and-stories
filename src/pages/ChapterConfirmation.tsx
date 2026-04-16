@@ -113,73 +113,77 @@ export default function ChapterConfirmation() {
   if (!state) return null
 
   return (
-    <div className="min-h-screen bg-[#FDF6EE] flex flex-col">
+    <div className="min-h-screen bg-[#3B2B3A] flex flex-col">
       <AppHeader showBack backTo="/record" title="Review your story" subtitle="Check the transcript and choose a chapter" />
 
       <div className="flex-1 max-w-lg mx-auto w-full px-4 py-6 space-y-5">
 
         {/* AI suggested chapter badge */}
-        <div className="flex items-center gap-2 bg-[#C8860A]/10 border border-[#C8860A]/30 rounded-xl px-4 py-3">
+        <div className="flex items-center gap-2 bg-[#D95D39]/15 border border-[#D95D39]/30 rounded-xl px-4 py-3">
           <span className="text-lg">✨</span>
           <div>
-            <div className="text-xs text-[#C8860A] font-semibold uppercase tracking-wide">AI suggested</div>
-            <div className="font-bold text-[#5C3D2E]">{state.ai_suggested_chapter}</div>
+            <div className="text-xs text-[#D95D39] font-semibold uppercase tracking-wide">AI suggested</div>
+            <div className="font-bold text-[#F5E9E0]">{state.ai_suggested_chapter}</div>
           </div>
         </div>
 
         {/* English transcript */}
-        <div className="bg-white rounded-2xl border border-[#5C3D2E]/10 p-5">
+        <div className="bg-[#F5E9E0] rounded-2xl p-5 shadow-lg">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-2 h-2 rounded-full bg-[#C8860A]" />
-            <span className="text-sm font-semibold text-[#5C3D2E]">English transcript</span>
+            <div className="w-2 h-2 rounded-full bg-[#D95D39]" />
+            <span className="text-sm font-semibold text-[#3B2B3A]">English transcript</span>
           </div>
-          <p className="text-gray-700 leading-relaxed text-sm">
+          <p className="text-[#3B2B3A]/70 leading-relaxed text-sm">
             {state.transcript_english}
           </p>
         </div>
 
         {/* Original transcript (if different language) */}
         {state.language !== 'English' && state.transcript_original && (
-          <div className="bg-white rounded-2xl border border-[#5C3D2E]/10 p-5">
+          <div className="bg-[#F5E9E0] rounded-2xl p-5 shadow-lg">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 rounded-full bg-[#5C3D2E]" />
-              <span className="text-sm font-semibold text-[#5C3D2E]">Original ({state.language})</span>
+              <div className="w-2 h-2 rounded-full bg-[#3B3B58]" />
+              <span className="text-sm font-semibold text-[#3B2B3A]">Original ({state.language})</span>
             </div>
-            <p className="text-gray-700 leading-relaxed text-sm">
+            <p className="text-[#3B2B3A]/70 leading-relaxed text-sm">
               {state.transcript_original}
             </p>
           </div>
         )}
 
         {/* Story title */}
-        <div className="space-y-2">
-          <Label>Story title</Label>
-          <Input
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            placeholder="Give this story a title"
-          />
+        <div className="bg-[#F5E9E0]/08 rounded-2xl p-4">
+          <div className="space-y-2">
+            <Label className="text-[#F5E9E0]">Story title</Label>
+            <Input
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              placeholder="Give this story a title"
+            />
+          </div>
         </div>
 
         {/* Chapter selector */}
-        <div className="space-y-2">
-          <Label className="flex items-center gap-2">
-            <BookOpen className="w-4 h-4" />
-            Save to chapter
-          </Label>
-          <Select value={selectedChapterId} onValueChange={setSelectedChapterId}>
-            <SelectTrigger>
-              <SelectValue placeholder="Choose a chapter..." />
-            </SelectTrigger>
-            <SelectContent>
-              {chapters.map(ch => (
-                <SelectItem key={ch.id} value={ch.id}>
-                  {ch.title}
-                  {ch.title === state.ai_suggested_chapter && ' ✨'}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="bg-[#F5E9E0]/08 rounded-2xl p-4">
+          <div className="space-y-2">
+            <Label className="text-[#F5E9E0] flex items-center gap-2">
+              <BookOpen className="w-4 h-4" />
+              Save to chapter
+            </Label>
+            <Select value={selectedChapterId} onValueChange={setSelectedChapterId}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose a chapter..." />
+              </SelectTrigger>
+              <SelectContent>
+                {chapters.map(ch => (
+                  <SelectItem key={ch.id} value={ch.id}>
+                    {ch.title}
+                    {ch.title === state.ai_suggested_chapter && ' ✨'}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {error && (
@@ -204,7 +208,7 @@ export default function ChapterConfirmation() {
 
         <button
           onClick={() => navigate('/record')}
-          className="w-full text-center text-sm text-gray-400 hover:text-[#5C3D2E] transition-colors py-2"
+          className="w-full text-center text-sm text-[#D5D9EC]/50 hover:text-[#F5E9E0] transition-colors py-2"
         >
           ← Go back and re-record
         </button>

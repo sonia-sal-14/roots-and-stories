@@ -4,10 +4,9 @@ import { supabase } from '@/lib/supabase'
 import type { Story, FamilyMember, Chapter } from '@/types/database'
 import { AppHeader } from '@/components/AppHeader'
 import { Button } from '@/components/ui/button'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import {
   Play, Pause, ArrowLeft,
-  Calendar, User, Mic, Globe,
+  Calendar, User, Mic,
 } from 'lucide-react'
 
 export default function StoryDetail() {
@@ -96,10 +95,10 @@ export default function StoryDetail() {
   // ── Loading ───────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FDF6EE] flex items-center justify-center">
+      <div className="min-h-screen bg-[#3B2B3A] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-10 h-10 border-4 border-[#5C3D2E] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-[#5C3D2E] font-medium">Loading story...</p>
+          <div className="w-10 h-10 border-4 border-[#D95D39] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#F5E9E0] font-medium">Loading story...</p>
         </div>
       </div>
     )
@@ -107,15 +106,15 @@ export default function StoryDetail() {
 
   if (error || !story) {
     return (
-      <div className="min-h-screen bg-[#FDF6EE] flex flex-col items-center justify-center px-6">
-        <p className="text-red-600 mb-4">{error || 'Story not found.'}</p>
+      <div className="min-h-screen bg-[#3B2B3A] flex flex-col items-center justify-center px-6">
+        <p className="text-red-400 mb-4">{error || 'Story not found.'}</p>
         <Button onClick={() => navigate('/library')}>Back to Library</Button>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#FDF6EE] flex flex-col">
+    <div className="min-h-screen bg-[#3B2B3A] flex flex-col">
       <AppHeader
         showBack
         backTo="/library"
@@ -128,37 +127,30 @@ export default function StoryDetail() {
         {/* Meta info */}
         <div className="flex flex-wrap gap-3">
           {member && (
-            <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2 border border-[#5C3D2E]/10 shadow-sm">
+            <div className="flex items-center gap-2 bg-[#F5E9E0] rounded-full px-4 py-2 shadow-sm">
               {member.photo_url ? (
                 <img src={member.photo_url} alt={member.display_name} className="w-6 h-6 rounded-full object-cover" />
               ) : (
-                <div className="w-6 h-6 rounded-full bg-[#5C3D2E] flex items-center justify-center">
-                  <User className="w-3 h-3 text-white" />
+                <div className="w-6 h-6 rounded-full bg-[#3B3B58] flex items-center justify-center">
+                  <User className="w-3 h-3 text-[#D5D9EC]" />
                 </div>
               )}
-              <span className="text-sm font-semibold text-[#5C3D2E]">{member.display_name}</span>
+              <span className="text-sm font-semibold text-[#3B2B3A]">{member.display_name}</span>
             </div>
           )}
-          <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2 border border-[#5C3D2E]/10 shadow-sm">
-            <Mic className="w-4 h-4 text-[#C8860A]" />
-            <span className="text-sm font-semibold text-[#5C3D2E]">{story.original_language}</span>
+          <div className="flex items-center gap-2 bg-[#F5E9E0] rounded-full px-4 py-2 shadow-sm">
+            <Mic className="w-4 h-4 text-[#D95D39]" />
+            <span className="text-sm font-semibold text-[#3B2B3A]">{story.original_language}</span>
           </div>
-          <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2 border border-[#5C3D2E]/10 shadow-sm">
-            <Calendar className="w-4 h-4 text-gray-400" />
-            <span className="text-sm text-gray-500">{formatDate(story.created_at)}</span>
+          <div className="flex items-center gap-2 bg-[#F5E9E0] rounded-full px-4 py-2 shadow-sm">
+            <Calendar className="w-4 h-4 text-[#3B2B3A]/40" />
+            <span className="text-sm font-semibold text-[#3B2B3A]">{formatDate(story.created_at)}</span>
           </div>
         </div>
 
         {/* Audio Player */}
         {story.audio_url && (
-          <div className="bg-white rounded-2xl border border-[#5C3D2E]/10 p-5 shadow-sm">
-            <div className="flex items-center gap-2 mb-4">
-              <Globe className="w-4 h-4 text-[#C8860A]" />
-              <span className="text-sm font-semibold text-[#5C3D2E]">
-                Listen in {story.original_language}
-              </span>
-            </div>
-
+          <div className="bg-[#F5E9E0] rounded-2xl shadow-lg p-5">
             <audio
               ref={audioRef}
               src={story.audio_url}
@@ -179,7 +171,7 @@ export default function StoryDetail() {
             <div className="flex items-center gap-4">
               <button
                 onClick={togglePlay}
-                className="w-14 h-14 rounded-full bg-[#5C3D2E] flex items-center justify-center flex-shrink-0 hover:bg-[#4a3124] transition-colors shadow"
+                className="w-14 h-14 rounded-full bg-[#3B2B3A] flex items-center justify-center flex-shrink-0 hover:bg-[#D95D39] transition-colors shadow"
               >
                 {isPlaying
                   ? <Pause className="w-6 h-6 text-white fill-current" />
@@ -195,10 +187,10 @@ export default function StoryDetail() {
                   onChange={handleSeek}
                   className="w-full h-2 rounded-full appearance-none cursor-pointer"
                   style={{
-                    background: `linear-gradient(to right, #5C3D2E ${progress}%, #e5e7eb ${progress}%)`,
+                    background: `linear-gradient(to right, #D95D39 ${progress}%, #3B2B3A20 ${progress}%)`,
                   }}
                 />
-                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                <div className="flex justify-between text-xs text-[#3B2B3A]/50 mt-1">
                   <span>{formatTime(currentTime)}</span>
                   <span>{formatTime(duration)}</span>
                 </div>
@@ -207,46 +199,20 @@ export default function StoryDetail() {
           </div>
         )}
 
-        {/* Transcripts */}
-        {(story.transcript_original || story.transcript_english) && (
-          <div className="bg-white rounded-2xl border border-[#5C3D2E]/10 shadow-sm overflow-hidden">
-            <Tabs defaultValue="english">
-              <div className="px-5 pt-5">
-                <TabsList className="w-full">
-                  <TabsTrigger value="english" className="flex-1">English</TabsTrigger>
-                  <TabsTrigger value="original" className="flex-1">
-                    {story.original_language === 'English' ? 'Original' : story.original_language}
-                  </TabsTrigger>
-                </TabsList>
-              </div>
-
-              <TabsContent value="english" className="px-5 pb-5">
-                {story.transcript_english ? (
-                  <p className="text-gray-700 leading-relaxed text-base">
-                    {story.transcript_english}
-                  </p>
-                ) : (
-                  <p className="text-gray-400 italic">No English transcript available.</p>
-                )}
-              </TabsContent>
-
-              <TabsContent value="original" className="px-5 pb-5">
-                {story.transcript_original ? (
-                  <p className="text-gray-700 leading-relaxed text-base">
-                    {story.transcript_original}
-                  </p>
-                ) : (
-                  <p className="text-gray-400 italic">No original transcript available.</p>
-                )}
-              </TabsContent>
-            </Tabs>
+        {/* Transcript section */}
+        {story.transcript_english && (
+          <div className="bg-[#F5E9E0] rounded-2xl shadow-lg p-5">
+            <h3 className="font-bold text-[#3B2B3A] text-base mb-3">Transcript</h3>
+            <p className="text-[#3B2B3A]/70 leading-relaxed text-base">
+              {story.transcript_english}
+            </p>
           </div>
         )}
 
         {/* Back button */}
         <Button
           variant="outline"
-          className="w-full"
+          className="w-full border-[#F5E9E0]/25 text-[#F5E9E0] hover:bg-[#F5E9E0]/08"
           onClick={() => navigate('/library')}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />

@@ -7,9 +7,17 @@ import { StoryCard } from '@/components/StoryCard'
 import { ChapterModal } from '@/components/ChapterModal'
 import { Button } from '@/components/ui/button'
 import {
-  BookOpen, Mic, ChevronDown, ChevronUp,
+  Mic, ChevronDown, ChevronUp,
   Plus, LogOut, ArrowUp, ArrowDown,
 } from 'lucide-react'
+
+const CHAPTER_EMOJIS: Record<string, string> = {
+  'Childhood': '🌱',
+  'Cultural Heritage': '🏺',
+  'Family & Traditions': '🤝',
+  'Recent Memories': '⭐',
+}
+const chapterEmoji = (title: string) => CHAPTER_EMOJIS[title] ?? '📖'
 
 export default function Library() {
   const navigate = useNavigate()
@@ -115,10 +123,10 @@ export default function Library() {
   // ── Loading ──────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FDF6EE] flex items-center justify-center">
+      <div className="min-h-screen bg-[#3B2B3A] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-10 h-10 border-4 border-[#5C3D2E] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-[#5C3D2E] font-medium">Loading your library...</p>
+          <div className="w-10 h-10 border-4 border-[#D95D39] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#F5E9E0] font-medium">Loading your library...</p>
         </div>
       </div>
     )
@@ -126,15 +134,15 @@ export default function Library() {
 
   if (error === 'no-family') {
     return (
-      <div className="min-h-screen bg-[#FDF6EE] flex flex-col items-center justify-center px-6">
+      <div className="min-h-screen bg-[#3B2B3A] flex flex-col items-center justify-center px-6">
         <div className="text-center max-w-sm">
           <div className="text-5xl mb-4">🏡</div>
-          <h2 className="text-2xl font-bold text-[#5C3D2E] mb-2">No family found</h2>
-          <p className="text-gray-500 mb-6">You're not linked to a family group yet. Create one or join an existing one.</p>
+          <h2 className="text-2xl font-bold text-[#F5E9E0] mb-2">No family found</h2>
+          <p className="text-[#D5D9EC]/60 mb-6">You're not linked to a family group yet. Create one or join an existing one.</p>
           <Button size="lg" className="w-full mb-3" onClick={() => navigate('/family-setup')}>
             Set up your family
           </Button>
-          <button onClick={handleSignOut} className="text-sm text-gray-400 hover:text-gray-600">
+          <button onClick={handleSignOut} className="text-sm text-[#D5D9EC]/50 hover:text-[#F5E9E0]">
             Sign out
           </button>
         </div>
@@ -144,9 +152,9 @@ export default function Library() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#FDF6EE] flex items-center justify-center px-6">
+      <div className="min-h-screen bg-[#3B2B3A] flex items-center justify-center px-6">
         <div className="text-center">
-          <p className="text-red-600 mb-4">{error}</p>
+          <p className="text-red-400 mb-4">{error}</p>
           <Button onClick={loadData}>Try again</Button>
         </div>
       </div>
@@ -155,20 +163,23 @@ export default function Library() {
 
   // ── Main UI ──────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#FDF6EE]">
+    <div className="min-h-screen bg-[#3B2B3A]">
       {/* Header */}
-      <div className="bg-white border-b border-[#5C3D2E]/8 sticky top-0 z-10">
+      <div
+        className="sticky top-0 z-10 border-b border-[#F5E9E0]/08"
+        style={{ background: 'linear-gradient(135deg, #3B2B3A 0%, #4E3068 60%, #3B3B58 100%)' }}
+      >
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#5C3D2E] rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-9 h-9 bg-[#D95D39] rounded-xl flex items-center justify-center flex-shrink-0 shadow-[0_2px_8px_rgba(217,93,57,0.4)]">
               <span className="text-lg">🌳</span>
             </div>
             <div>
-              <div className="font-black text-[#5C3D2E] text-lg tracking-tight leading-tight">
+              <div className="font-black text-[#F5E9E0] text-lg tracking-tight leading-tight">
                 {familyGroup?.name ?? 'kahani'}
               </div>
-              <div className="text-xs text-gray-400">
-                Invite: <span className="font-mono font-bold tracking-widest text-[#C8860A]">{familyGroup?.invite_code}</span>
+              <div className="text-xs text-[#D5D9EC]/50">
+                Invite: <span className="font-mono font-bold tracking-widest text-[#D95D39]">{familyGroup?.invite_code}</span>
               </div>
             </div>
           </div>
@@ -176,14 +187,14 @@ export default function Library() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate('/record')}
-              className="flex items-center gap-2 bg-[#C8860A] text-white px-4 py-2.5 rounded-2xl font-bold text-sm hover:bg-[#a36e08] transition-colors shadow-sm"
+              className="flex items-center gap-2 bg-[#D95D39] text-white px-4 py-2.5 rounded-2xl font-bold text-sm hover:bg-[#B84A2A] transition-colors shadow-[0_4px_14px_rgba(217,93,57,0.4)]"
             >
               <Mic className="w-4 h-4" />
               <span>Record</span>
             </button>
             <button
               onClick={handleSignOut}
-              className="p-2 text-gray-300 hover:text-[#5C3D2E] transition-colors"
+              className="p-2 text-[#D5D9EC]/40 hover:text-[#F5E9E0] transition-colors"
               title="Sign out"
             >
               <LogOut className="w-5 h-5" />
@@ -199,10 +210,10 @@ export default function Library() {
         {chapters.length === 0 && stories.length === 0 && (
           <div className="text-center py-16">
             <div className="text-6xl mb-4">📖</div>
-            <h2 className="text-2xl font-bold text-[#5C3D2E] mb-2">
+            <h2 className="text-2xl font-bold text-[#F5E9E0] mb-2">
               Your family's story starts here.
             </h2>
-            <p className="text-gray-500 mb-8">
+            <p className="text-[#D5D9EC]/60 mb-8">
               Record your first memory and it will appear here for your whole family.
             </p>
             <Button size="lg" onClick={() => navigate('/record')} className="gap-2">
@@ -218,19 +229,19 @@ export default function Library() {
           const isOpen = openChapters.has(chapter.id)
 
           return (
-            <div key={chapter.id} className="bg-white rounded-3xl border border-[#5C3D2E]/8 overflow-hidden shadow-sm">
+            <div key={chapter.id} className="bg-[#F5E9E0] rounded-3xl shadow-lg overflow-hidden">
               {/* Chapter header */}
               <div className="flex items-center px-5 py-4">
                 <button
                   className="flex-1 flex items-center gap-3 text-left"
                   onClick={() => toggleChapter(chapter.id)}
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-[#5C3D2E] flex items-center justify-center flex-shrink-0">
-                    <BookOpen className="w-5 h-5 text-white" />
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#D95D39] to-[#E8845E] flex items-center justify-center flex-shrink-0 shadow-[0_4px_12px_rgba(217,93,57,0.35)]">
+                    <span className="text-xl">{chapterEmoji(chapter.title)}</span>
                   </div>
                   <div>
-                    <div className="font-black text-[#5C3D2E] text-base tracking-tight">{chapter.title}</div>
-                    <div className="text-xs text-gray-400 mt-0.5">
+                    <div className="font-black text-[#3B2B3A] text-base tracking-tight">{chapter.title}</div>
+                    <div className="text-xs text-[#3B2B3A]/50 mt-0.5">
                       {chapterStories.length === 0
                         ? 'No stories yet'
                         : `${chapterStories.length} ${chapterStories.length === 1 ? 'story' : 'stories'}`}
@@ -238,19 +249,19 @@ export default function Library() {
                   </div>
                   <div className="ml-auto">
                     {isOpen
-                      ? <ChevronUp className="w-5 h-5 text-gray-300" />
-                      : <ChevronDown className="w-5 h-5 text-gray-300" />}
+                      ? <ChevronUp className="w-5 h-5 text-[#3B2B3A]/30" />
+                      : <ChevronDown className="w-5 h-5 text-[#3B2B3A]/30" />}
                   </div>
                 </button>
 
                 {/* Reorder buttons */}
                 <div className="flex gap-1 ml-2">
                   <button onClick={() => moveChapter(chapter, 'up')} disabled={idx === 0}
-                    className="p-1.5 rounded-xl text-gray-300 hover:text-[#5C3D2E] hover:bg-[#FDF6EE] disabled:opacity-20 disabled:cursor-not-allowed transition-colors">
+                    className="p-1.5 rounded-xl text-[#3B2B3A]/30 hover:text-[#3B2B3A] hover:bg-[#3B2B3A]/08 disabled:opacity-20 disabled:cursor-not-allowed transition-colors">
                     <ArrowUp className="w-4 h-4" />
                   </button>
                   <button onClick={() => moveChapter(chapter, 'down')} disabled={idx === chapters.length - 1}
-                    className="p-1.5 rounded-xl text-gray-300 hover:text-[#5C3D2E] hover:bg-[#FDF6EE] disabled:opacity-20 disabled:cursor-not-allowed transition-colors">
+                    className="p-1.5 rounded-xl text-[#3B2B3A]/30 hover:text-[#3B2B3A] hover:bg-[#3B2B3A]/08 disabled:opacity-20 disabled:cursor-not-allowed transition-colors">
                     <ArrowDown className="w-4 h-4" />
                   </button>
                 </div>
@@ -258,11 +269,11 @@ export default function Library() {
 
               {/* Stories list */}
               {isOpen && (
-                <div className="border-t border-[#5C3D2E]/5 px-4 py-3 space-y-3 bg-[#FDF6EE]/40">
+                <div className="border-t border-[#3B2B3A]/08 px-4 py-3 space-y-3 bg-[#3B2B3A]/05">
                   {chapterStories.length === 0 ? (
                     <div className="text-center py-8">
-                      <p className="text-gray-400 text-sm">No stories here yet.</p>
-                      <button onClick={() => navigate('/record')} className="text-[#C8860A] font-semibold text-sm mt-1 hover:underline">Record one →</button>
+                      <p className="text-[#3B2B3A]/50 text-sm">No stories here yet.</p>
+                      <button onClick={() => navigate('/record')} className="text-[#D95D39] font-semibold text-sm mt-1 hover:underline">Record one →</button>
                     </div>
                   ) : (
                     chapterStories.map(story => (
@@ -277,11 +288,11 @@ export default function Library() {
 
         {/* Uncategorised stories */}
         {uncategorisedStories.length > 0 && (
-          <div className="bg-white rounded-2xl border border-[#5C3D2E]/10 overflow-hidden shadow-sm">
-            <div className="px-5 py-4 border-b border-[#5C3D2E]/5">
-              <div className="font-bold text-gray-400 text-sm uppercase tracking-wide">Uncategorised</div>
+          <div className="bg-[#F5E9E0] rounded-2xl shadow-lg overflow-hidden">
+            <div className="px-5 py-4 border-b border-[#3B2B3A]/08">
+              <div className="font-bold text-[#3B2B3A]/50 text-sm uppercase tracking-wide">Uncategorised</div>
             </div>
-            <div className="px-4 py-3 space-y-3 bg-[#FDF6EE]/50">
+            <div className="px-4 py-3 space-y-3 bg-[#3B2B3A]/05">
               {uncategorisedStories.map(story => (
                 <StoryCard
                   key={story.id}
@@ -296,7 +307,7 @@ export default function Library() {
         {/* Add chapter button */}
         <button
           onClick={() => setShowChapterModal(true)}
-          className="w-full py-4 border-2 border-dashed border-[#5C3D2E]/20 rounded-2xl text-[#5C3D2E]/50 hover:border-[#5C3D2E]/40 hover:text-[#5C3D2E] transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+          className="w-full py-4 border-2 border-dashed border-[#F5E9E0]/20 rounded-2xl text-[#F5E9E0]/40 hover:border-[#F5E9E0]/40 hover:text-[#F5E9E0] transition-colors flex items-center justify-center gap-2 text-sm font-medium"
         >
           <Plus className="w-4 h-4" />
           Add a chapter
@@ -310,7 +321,7 @@ export default function Library() {
       <div className="fixed bottom-6 right-6 sm:hidden">
         <button
           onClick={() => navigate('/record')}
-          className="w-16 h-16 bg-[#C8860A] rounded-full shadow-lg flex items-center justify-center hover:bg-[#a36e08] transition-colors"
+          className="w-16 h-16 bg-[#D95D39] rounded-full shadow-lg flex items-center justify-center hover:bg-[#B84A2A] transition-colors shadow-[0_4px_16px_rgba(217,93,57,0.5)]"
         >
           <Mic className="w-7 h-7 text-white" />
         </button>
