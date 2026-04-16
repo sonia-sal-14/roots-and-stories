@@ -19,6 +19,9 @@ const VALID_CHAPTERS = [
 ] as const
 
 // ISO 639-1 codes for Whisper language hints
+// Only languages officially supported by Whisper as explicit hints.
+// Unsupported ones (Gujarati, Bengali, Punjabi, Telugu) are omitted —
+// Whisper will auto-detect them, which still works well in practice.
 const LANGUAGE_CODES: Record<string, string> = {
   English: 'en',
   Arabic: 'ar',
@@ -26,13 +29,9 @@ const LANGUAGE_CODES: Record<string, string> = {
   Mandarin: 'zh',
   Portuguese: 'pt',
   Spanish: 'es',
-  Bengali: 'bn',
-  Gujarati: 'gu',
   Hindi: 'hi',
   Marathi: 'mr',
-  Punjabi: 'pa',
   Tamil: 'ta',
-  Telugu: 'te',
   Tagalog: 'tl',
   Japanese: 'ja',
   Korean: 'ko',
