@@ -10,6 +10,7 @@ import FamilySetup from '@/pages/FamilySetup'
 import Library from '@/pages/Library'
 import RecordStory from '@/pages/RecordStory'
 import ChapterConfirmation from '@/pages/ChapterConfirmation'
+import StoryDetail from '@/pages/StoryDetail'
 
 export default function App() {
   return (
@@ -38,6 +39,9 @@ export default function App() {
           } />
           <Route path="/confirm-chapter" element={
             <ProtectedRoute><ChapterConfirmation /></ProtectedRoute>
+          } />
+          <Route path="/story/:id" element={
+            <ProtectedRoute><StoryDetail /></ProtectedRoute>
           } />
 
           {/* Default redirect */}
