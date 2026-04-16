@@ -10,60 +10,47 @@ interface StoryCardProps {
 export function StoryCard({ story, member }: StoryCardProps) {
   const navigate = useNavigate()
 
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'short', day: 'numeric', year: 'numeric',
-    })
-  }
+  const formatDate = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
   return (
     <div
-      className="bg-white rounded-xl border border-[#5C3D2E]/10 p-4 hover:shadow-md hover:border-[#5C3D2E]/30 transition-all cursor-pointer group"
+      className="bg-white rounded-2xl p-4 hover:shadow-md transition-all cursor-pointer group border border-transparent hover:border-[#5C3D2E]/10"
       onClick={() => navigate(`/story/${story.id}`)}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-center gap-3">
+        {/* Play button */}
+        <div className="w-12 h-12 rounded-2xl bg-[#FDF6EE] group-hover:bg-[#5C3D2E] flex items-center justify-center flex-shrink-0 transition-colors">
+          <Play className="w-5 h-5 text-[#5C3D2E] group-hover:text-white fill-current transition-colors ml-0.5" />
+        </div>
+
+        {/* Content */}
         <div className="flex-1 min-w-0">
-          {/* Title */}
-          <h3 className="font-semibold text-[#5C3D2E] text-base leading-snug mb-2 group-hover:text-[#4a3124] transition-colors">
+          <h3 className="font-bold text-[#5C3D2E] text-sm leading-snug mb-1 truncate group-hover:text-[#4a3124] transition-colors">
             {story.title}
           </h3>
-
-          {/* Meta row */}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-gray-400">
             {member && (
               <span className="flex items-center gap-1">
-                <User className="w-3.5 h-3.5" />
-                {member.display_name}
+                <User className="w-3 h-3" />{member.display_name}
               </span>
             )}
             <span className="flex items-center gap-1">
-              <Mic className="w-3.5 h-3.5" />
-              {story.original_language}
+              <Mic className="w-3 h-3" />{story.original_language}
             </span>
             <span className="flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5" />
-              {formatDate(story.created_at)}
+              <Calendar className="w-3 h-3" />{formatDate(story.created_at)}
             </span>
           </div>
-
-          {/* Audio player */}
-          {story.audio_url && (
-            <div className="mt-3" onClick={e => e.stopPropagation()}>
-              <audio
-                controls
-                src={story.audio_url}
-                className="w-full h-9"
-                preload="none"
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Play icon hint */}
-        <div className="flex-shrink-0 w-9 h-9 rounded-full bg-[#FDF6EE] flex items-center justify-center group-hover:bg-[#5C3D2E] transition-colors mt-0.5">
-          <Play className="w-4 h-4 text-[#5C3D2E] group-hover:text-white transition-colors fill-current" />
         </div>
       </div>
+
+      {/* Audio player */}
+      {story.audio_url && (
+        <div className="mt-3 pl-15" onClick={e => e.stopPropagation()}>
+          <audio controls src={story.audio_url} className="w-full h-8" preload="none" />
+        </div>
+      )}
     </div>
   )
 }

@@ -1,64 +1,64 @@
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { BookOpen } from 'lucide-react'
 
 export default function Welcome() {
   const navigate = useNavigate()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FDF6EE] via-[#f5e6d3] to-[#ede0cc] flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-center pt-12 pb-4">
-        <BookOpen className="w-10 h-10 text-[#C8860A] mr-3" />
-        <span className="text-2xl font-bold text-[#5C3D2E]">Roots & Stories</span>
-      </div>
+    <div className="min-h-screen bg-[#FDF6EE] flex flex-col">
+      {/* Top accent bar */}
+      <div className="h-1.5 bg-gradient-to-r from-[#5C3D2E] via-[#C8860A] to-[#5C3D2E]" />
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pb-12">
-        <div className="w-full max-w-md text-center">
-          {/* Decorative element */}
-          <div className="w-24 h-24 bg-[#5C3D2E] rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
-            <span className="text-4xl">🌳</span>
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+        <div className="w-full max-w-sm">
+
+          {/* Logo mark */}
+          <div className="flex flex-col items-center mb-10">
+            <div className="w-20 h-20 bg-[#5C3D2E] rounded-3xl flex items-center justify-center shadow-xl mb-5 rotate-3">
+              <span className="text-4xl">🌳</span>
+            </div>
+            <h1 className="text-5xl font-black text-[#5C3D2E] tracking-tight">kahani</h1>
+            <p className="text-[#C8860A] font-semibold text-base mt-1 tracking-wide">
+              कहानी · قصة · 故事
+            </p>
           </div>
 
-          <h1 className="text-4xl font-bold text-[#5C3D2E] mb-4 leading-tight">
-            Your family's voice,<br />for every generation.
-          </h1>
+          {/* Tagline card */}
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#5C3D2E]/8 mb-8">
+            <p className="text-[#5C3D2E] text-xl font-bold leading-snug mb-2">
+              Preserve your family's voice,
+            </p>
+            <p className="text-[#C8860A] text-xl font-bold leading-snug">
+              for every generation.
+            </p>
+            <p className="text-gray-400 text-sm mt-3 leading-relaxed">
+              Record stories in any language. Transcribed, translated, and saved for your whole family — forever.
+            </p>
+          </div>
 
-          <p className="text-gray-600 text-lg mb-10 leading-relaxed">
-            Record stories in any language. We'll transcribe, translate, and preserve them for your whole family — forever.
-          </p>
+          {/* Feature pills */}
+          <div className="flex flex-wrap gap-2 justify-center mb-10">
+            {['🎙 Record', '🌍 Translate', '📖 Preserve', '👨‍👩‍👧 Share'].map(f => (
+              <span key={f} className="bg-[#5C3D2E]/8 text-[#5C3D2E] text-sm font-semibold px-4 py-1.5 rounded-full">
+                {f}
+              </span>
+            ))}
+          </div>
 
-          {/* Buttons */}
-          <div className="flex flex-col gap-4">
-            <Button
-              size="lg"
-              className="w-full text-xl py-7"
-              onClick={() => navigate('/signup')}
-            >
-              Create an account
+          {/* CTAs */}
+          <div className="space-y-3">
+            <Button size="lg" className="w-full text-xl py-7 rounded-2xl font-bold shadow-lg" onClick={() => navigate('/signup')}>
+              Get started
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="w-full text-xl py-7"
-              onClick={() => navigate('/signin')}
-            >
+            <Button size="lg" variant="outline" className="w-full text-xl py-7 rounded-2xl font-bold" onClick={() => navigate('/signin')}>
               Sign in
             </Button>
           </div>
 
-          {/* Trust message */}
-          <p className="text-sm text-gray-500 mt-8">
-            🔒 Your stories are private and secure.
-            Only your family can access them.
+          <p className="text-center text-xs text-gray-400 mt-6">
+            🔒 Private & secure. Only your family can access your stories.
           </p>
         </div>
-      </div>
-
-      {/* Footer */}
-      <div className="text-center pb-6 text-sm text-gray-400">
-        Made with ❤️ for families everywhere
       </div>
     </div>
   )

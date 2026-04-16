@@ -157,33 +157,33 @@ export default function Library() {
   return (
     <div className="min-h-screen bg-[#FDF6EE]">
       {/* Header */}
-      <div className="bg-white border-b border-[#5C3D2E]/10 sticky top-0 z-10 shadow-sm">
+      <div className="bg-white border-b border-[#5C3D2E]/8 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-6 h-6 text-[#C8860A]" />
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-[#5C3D2E] rounded-xl flex items-center justify-center flex-shrink-0">
+              <span className="text-lg">🌳</span>
+            </div>
             <div>
-              <div className="font-bold text-[#5C3D2E] leading-tight">
-                {familyGroup?.name ?? 'Our Family'}
+              <div className="font-black text-[#5C3D2E] text-lg tracking-tight leading-tight">
+                {familyGroup?.name ?? 'kahani'}
               </div>
               <div className="text-xs text-gray-400">
-                Code: <span className="font-mono font-semibold tracking-wider">{familyGroup?.invite_code}</span>
+                Invite: <span className="font-mono font-bold tracking-widest text-[#C8860A]">{familyGroup?.invite_code}</span>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="accent"
+            <button
               onClick={() => navigate('/record')}
-              className="flex items-center gap-1.5"
+              className="flex items-center gap-2 bg-[#C8860A] text-white px-4 py-2.5 rounded-2xl font-bold text-sm hover:bg-[#a36e08] transition-colors shadow-sm"
             >
               <Mic className="w-4 h-4" />
-              <span className="hidden sm:inline">Record</span>
-            </Button>
+              <span>Record</span>
+            </button>
             <button
               onClick={handleSignOut}
-              className="p-2 text-gray-400 hover:text-[#5C3D2E] transition-colors"
+              className="p-2 text-gray-300 hover:text-[#5C3D2E] transition-colors"
               title="Sign out"
             >
               <LogOut className="w-5 h-5" />
@@ -218,19 +218,19 @@ export default function Library() {
           const isOpen = openChapters.has(chapter.id)
 
           return (
-            <div key={chapter.id} className="bg-white rounded-2xl border border-[#5C3D2E]/10 overflow-hidden shadow-sm">
+            <div key={chapter.id} className="bg-white rounded-3xl border border-[#5C3D2E]/8 overflow-hidden shadow-sm">
               {/* Chapter header */}
               <div className="flex items-center px-5 py-4">
                 <button
                   className="flex-1 flex items-center gap-3 text-left"
                   onClick={() => toggleChapter(chapter.id)}
                 >
-                  <div className="w-8 h-8 rounded-lg bg-[#5C3D2E]/10 flex items-center justify-center flex-shrink-0">
-                    <BookOpen className="w-4 h-4 text-[#5C3D2E]" />
+                  <div className="w-10 h-10 rounded-2xl bg-[#5C3D2E] flex items-center justify-center flex-shrink-0">
+                    <BookOpen className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <div className="font-bold text-[#5C3D2E]">{chapter.title}</div>
-                    <div className="text-xs text-gray-400">
+                    <div className="font-black text-[#5C3D2E] text-base tracking-tight">{chapter.title}</div>
+                    <div className="text-xs text-gray-400 mt-0.5">
                       {chapterStories.length === 0
                         ? 'No stories yet'
                         : `${chapterStories.length} ${chapterStories.length === 1 ? 'story' : 'stories'}`}
@@ -238,27 +238,19 @@ export default function Library() {
                   </div>
                   <div className="ml-auto">
                     {isOpen
-                      ? <ChevronUp className="w-5 h-5 text-gray-400" />
-                      : <ChevronDown className="w-5 h-5 text-gray-400" />}
+                      ? <ChevronUp className="w-5 h-5 text-gray-300" />
+                      : <ChevronDown className="w-5 h-5 text-gray-300" />}
                   </div>
                 </button>
 
                 {/* Reorder buttons */}
-                <div className="flex gap-1 ml-3">
-                  <button
-                    onClick={() => moveChapter(chapter, 'up')}
-                    disabled={idx === 0}
-                    className="p-1.5 rounded-md text-gray-300 hover:text-[#5C3D2E] hover:bg-[#FDF6EE] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    title="Move up"
-                  >
+                <div className="flex gap-1 ml-2">
+                  <button onClick={() => moveChapter(chapter, 'up')} disabled={idx === 0}
+                    className="p-1.5 rounded-xl text-gray-300 hover:text-[#5C3D2E] hover:bg-[#FDF6EE] disabled:opacity-20 disabled:cursor-not-allowed transition-colors">
                     <ArrowUp className="w-4 h-4" />
                   </button>
-                  <button
-                    onClick={() => moveChapter(chapter, 'down')}
-                    disabled={idx === chapters.length - 1}
-                    className="p-1.5 rounded-md text-gray-300 hover:text-[#5C3D2E] hover:bg-[#FDF6EE] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    title="Move down"
-                  >
+                  <button onClick={() => moveChapter(chapter, 'down')} disabled={idx === chapters.length - 1}
+                    className="p-1.5 rounded-xl text-gray-300 hover:text-[#5C3D2E] hover:bg-[#FDF6EE] disabled:opacity-20 disabled:cursor-not-allowed transition-colors">
                     <ArrowDown className="w-4 h-4" />
                   </button>
                 </div>
@@ -266,20 +258,15 @@ export default function Library() {
 
               {/* Stories list */}
               {isOpen && (
-                <div className="border-t border-[#5C3D2E]/5 px-4 py-3 space-y-3 bg-[#FDF6EE]/50">
+                <div className="border-t border-[#5C3D2E]/5 px-4 py-3 space-y-3 bg-[#FDF6EE]/40">
                   {chapterStories.length === 0 ? (
-                    <div className="text-center py-6">
-                      <p className="text-gray-400 text-sm">
-                        No stories in this chapter yet. Record one!
-                      </p>
+                    <div className="text-center py-8">
+                      <p className="text-gray-400 text-sm">No stories here yet.</p>
+                      <button onClick={() => navigate('/record')} className="text-[#C8860A] font-semibold text-sm mt-1 hover:underline">Record one →</button>
                     </div>
                   ) : (
                     chapterStories.map(story => (
-                      <StoryCard
-                        key={story.id}
-                        story={story}
-                        member={getMemberById(story.created_by)}
-                      />
+                      <StoryCard key={story.id} story={story} member={getMemberById(story.created_by)} />
                     ))
                   )}
                 </div>
