@@ -8,6 +8,8 @@ import SignIn from '@/pages/SignIn'
 import ProfileSetup from '@/pages/ProfileSetup'
 import FamilySetup from '@/pages/FamilySetup'
 import Library from '@/pages/Library'
+import RecordStory from '@/pages/RecordStory'
+import ChapterConfirmation from '@/pages/ChapterConfirmation'
 
 export default function App() {
   return (
@@ -30,6 +32,12 @@ export default function App() {
           {/* Fully protected routes */}
           <Route path="/library" element={
             <ProtectedRoute><Library /></ProtectedRoute>
+          } />
+          <Route path="/record" element={
+            <ProtectedRoute><RecordStory /></ProtectedRoute>
+          } />
+          <Route path="/confirm-chapter" element={
+            <ProtectedRoute><ChapterConfirmation /></ProtectedRoute>
           } />
 
           {/* Default redirect */}
