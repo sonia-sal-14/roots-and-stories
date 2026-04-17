@@ -164,18 +164,26 @@ export default function Library() {
   // ── Main UI ──────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-[#3B2B3A]">
-      {/* Header */}
-      <div
-        className="sticky top-0 z-10 border-b border-[#F5E9E0]/08"
-        style={{ background: 'linear-gradient(135deg, #3B2B3A 0%, #4E3068 60%, #3B3B58 100%)' }}
-      >
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
+      {/* Safe area spacer for iOS status bar */}
+      <div style={{ height: 'env(safe-area-inset-top)' }} />
+
+      {/* Floating glass header */}
+      <div className="sticky top-0 z-10 px-4 pt-3 pb-2" style={{ top: 'env(safe-area-inset-top)' }}>
+        <div
+          className="max-w-2xl mx-auto flex items-center justify-between px-4 py-3 rounded-2xl border border-[#F5E9E0]/12"
+          style={{
+            background: 'rgba(59, 43, 58, 0.75)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
+          }}
+        >
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 flex-shrink-0">
+            <div className="w-8 h-8 flex-shrink-0">
               <img src="/logo-orange.png" alt="Kahani" className="w-full h-full object-contain" />
             </div>
             <div>
-              <div className="font-black text-[#F5E9E0] text-lg tracking-tight leading-tight">
+              <div className="font-black text-[#F5E9E0] text-base tracking-tight leading-tight">
                 {familyGroup?.name ?? 'kahani'}
               </div>
               <div className="text-xs text-[#D5D9EC]/50">
@@ -187,7 +195,7 @@ export default function Library() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate('/record')}
-              className="flex items-center gap-2 bg-[#D95D39] text-white px-4 py-2.5 rounded-2xl font-bold text-sm hover:bg-[#B84A2A] transition-colors shadow-[0_4px_14px_rgba(217,93,57,0.4)]"
+              className="flex items-center gap-2 bg-[#D95D39] text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-[#B84A2A] transition-colors shadow-[0_4px_14px_rgba(217,93,57,0.4)]"
             >
               <Mic className="w-4 h-4" />
               <span>Record</span>
@@ -204,7 +212,7 @@ export default function Library() {
       </div>
 
       {/* Content */}
-      <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
+      <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
 
         {/* Empty state */}
         {chapters.length === 0 && stories.length === 0 && (
@@ -313,12 +321,12 @@ export default function Library() {
           Add a chapter
         </button>
 
-        {/* Bottom Record button (mobile) */}
-        <div className="h-6" />
+        {/* Bottom spacer for floating button + safe area */}
+        <div style={{ height: 'calc(env(safe-area-inset-bottom) + 88px)' }} />
       </div>
 
       {/* Floating record button on mobile */}
-      <div className="fixed bottom-6 right-6 sm:hidden">
+      <div className="fixed right-6 sm:hidden" style={{ bottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}>
         <button
           onClick={() => navigate('/record')}
           className="w-16 h-16 bg-[#D95D39] rounded-full shadow-lg flex items-center justify-center hover:bg-[#B84A2A] transition-colors shadow-[0_4px_16px_rgba(217,93,57,0.5)]"
