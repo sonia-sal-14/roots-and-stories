@@ -11,8 +11,8 @@ export default function Welcome() {
 
           {/* Logo mark */}
           <div className="flex flex-col items-center mb-10">
-            <div className="w-20 h-20 bg-gradient-to-br from-[#D95D39] to-[#E8845E] rounded-3xl flex items-center justify-center shadow-[0_8px_24px_rgba(217,93,57,0.45)] mb-5 rotate-3">
-              <span className="text-4xl">🌳</span>
+            <div className="w-24 h-24 bg-[#F5E9E0] rounded-3xl flex items-center justify-center shadow-[0_8px_32px_rgba(217,93,57,0.35)] mb-5 overflow-hidden">
+              <img src="/logo-orange.png" alt="Kahani" className="w-full h-full object-contain p-2" />
             </div>
             <h1 className="text-5xl font-black text-[#F5E9E0] tracking-tight">kahani</h1>
             <p className="text-[#D95D39] font-semibold text-base mt-1 tracking-wide">
