@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kahani — Visual Preview</title>
+  <style>
+    :root {
+      --violet:     #3B2B3A;
+      --indigo:     #3B3B58;
+      --linen:      #F5E9E0;
+      --terracotta: #D95D39;
+      --terra-dark: #B84A2A;
+      --lavender:   #D5D9EC;
+      --white:      #FFFFFF;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a1a;
+      padding: 40px 20px;
+      color: white;
+    }
+
+    h2 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: #888;
+      margin: 48px 0 20px;
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h2:first-of-type { margin-top: 0; }
+
+    .row {
+      display: flex;
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+
+    /* ─── WELCOME SCREENS ─────────────────────────────────── */
+    .welcome {
+      flex: 1;
+      min-width: 280px;
+      max-width: 340px;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    }
+
+    .welcome-inner {
+      padding: 36px 24px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 560px;
+    }
+
+    /* Option A — Midnight Violet bg */
+    .welcome-a { background: var(--violet); }
+    .welcome-a .logo-box {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, var(--terracotta), #E8845E);
+      border-radius: 22px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 34px;
+      box-shadow: 0 8px 24px rgba(217,93,57,.45);
+      margin-bottom: 18px;
+    }
+    .welcome-a h1 { font-size: 42px; font-weight: 900; color: var(--linen); letter-spacing: -.02em; }
+    .welcome-a .sub { font-size: 13px; color: var(--terracotta); font-weight: 600; margin-top: 4px; letter-spacing: .05em; }
+    .welcome-a .tagline-card {
+      width: 100%;
+      background: rgba(245,233,224,.07);
+      border: 1px solid rgba(245,233,224,.12);
+      border-radius: 20px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+    .welcome-a .tagline-card p { font-size: 15px; font-weight: 700; color: var(--linen); line-height: 1.4; }
+    .welcome-a .tagline-card p span { color: var(--terracotta); }
+    .welcome-a .tagline-card small { font-size: 12px; color: rgba(245,233,224,.5); display: block; margin-top: 8px; line-height: 1.5; }
+    .welcome-a .pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px; }
+    .welcome-a .pill {
+      background: rgba(245,233,224,.1);
+      color: var(--linen);
+      font-size: 12px; font-weight: 600;
+      padding: 6px 14px; border-radius: 20px;
+    }
+
+    /* Option B — Terracotta hero top */
+    .welcome-b { background: var(--linen); }
+    .welcome-b .hero {
+      background: linear-gradient(160deg, var(--terracotta) 0%, #C04A28 100%);
+      margin: -36px -24px 0;
+      padding: 40px 24px 36px;
+      display: flex; flex-direction: column; align-items: center;
+      margin-bottom: 24px;
+    }
+    .welcome-b .logo-box {
+      width: 68px; height: 68px;
+      background: rgba(255,255,255,.2);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      margin-bottom: 14px;
+    }
+    .welcome-b h1 { font-size: 38px; font-weight: 900; color: white; letter-spacing: -.02em; }
+    .welcome-b .sub { font-size: 12px; color: rgba(255,255,255,.75); font-weight: 600; margin-top: 3px; }
+    .welcome-b .tagline-card {
+      width: 100%;
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(59,43,58,.1);
+    }
+    .welcome-b .tagline-card p { font-size: 15px; font-weight: 700; color: var(--violet); line-height: 1.4; }
+    .welcome-b .tagline-card p span { color: var(--terracotta); }
+    .welcome-b .tagline-card small { font-size: 12px; color: #999; display: block; margin-top: 8px; line-height: 1.5; }
+    .welcome-b .pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; }
+    .welcome-b .pill {
+      background: rgba(59,43,58,.08);
+      color: var(--violet);
+      font-size: 12px; font-weight: 600;
+      padding: 6px 14px; border-radius: 20px;
+    }
+
+    /* ─── BUTTONS ─────────────────────────────────────────── */
+    .btn-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-start;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .btn-group {
+      background: var(--violet);
+      border-radius: 20px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 220px;
+    }
+    .btn-group-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: rgba(245,233,224,.4); margin-bottom: 4px; }
+
+    .btn-group-light {
+      background: var(--linen);
+      border-radius: 20px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 220px;
+    }
+    .btn-group-light .btn-group-label { color: rgba(59,43,58,.4); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 24px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all .2s ease;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* Primary — Terracotta */
+    .btn-primary {
+      background: var(--terracotta);
+      color: white;
+      box-shadow: 0 4px 16px rgba(217,93,57,.35);
+    }
+    .btn-primary:hover {
+      background: var(--terra-dark);
+      box-shadow: 0 6px 24px rgba(217,93,57,.55);
+      transform: translateY(-1px);
+    }
+
+    /* Secondary — outline on dark */
+    .btn-outline-dark {
+      background: transparent;
+      color: var(--linen);
+      border: 1.5px solid rgba(245,233,224,.25);
+    }
+    .btn-outline-dark:hover {
+      background: rgba(245,233,224,.08);
+      border-color: rgba(245,233,224,.5);
+    }
+
+    /* Secondary — outline on light */
+    .btn-outline-light {
+      background: transparent;
+      color: var(--violet);
+      border: 1.5px solid rgba(59,43,58,.2);
+    }
+    .btn-outline-light:hover {
+      background: rgba(59,43,58,.06);
+      border-color: rgba(59,43,58,.4);
+    }
+
+    /* Ghost indigo */
+    .btn-indigo {
+      background: var(--indigo);
+      color: var(--linen);
+    }
+    .btn-indigo:hover {
+      background: #4a4a70;
+      box-shadow: 0 4px 16px rgba(59,59,88,.4);
+    }
+
+    /* Lavender ghost */
+    .btn-lavender {
+      background: rgba(213,217,236,.15);
+      color: var(--lavender);
+      border: 1px solid rgba(213,217,236,.2);
+    }
+    .btn-lavender:hover {
+      background: rgba(213,217,236,.22);
+    }
+
+    /* Small record pill */
+    .btn-record {
+      background: var(--terracotta);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      box-shadow: 0 4px 14px rgba(217,93,57,.4);
+      width: auto;
+    }
+    .btn-record:hover {
+      box-shadow: 0 6px 22px rgba(217,93,57,.6);
+      transform: translateY(-1px);
+    }
+
+    /* ─── STORY CARDS ─────────────────────────────────────── */
+    .cards-bg {
+      background: var(--violet);
+      border-radius: 24px;
+      padding: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .chapter-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .chapter-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--terracotta), #E8845E);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(217,93,57,.35);
+      flex-shrink: 0;
+    }
+    .chapter-title { font-size: 15px; font-weight: 900; color: var(--linen); }
+    .chapter-count { font-size: 11px; color: rgba(245,233,224,.4); margin-top: 1px; }
+
+    .story-cards-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .story-card {
+      background: var(--linen);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      transition: all .25s ease;
+      box-shadow: 0 2px 12px rgba(0,0,0,.15);
+      border: 1px solid transparent;
+    }
+    .story-card:hover {
+      box-shadow: 0 4px 24px rgba(217,93,57,.35), 0 0 0 1px rgba(217,93,57,.3);
+      transform: translateY(-2px);
+    }
+
+    .play-btn {
+      width: 40px; height: 40px;
+      background: var(--violet);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+      transition: all .2s;
+      color: var(--linen);
+    }
+    .story-card:hover .play-btn {
+      background: var(--terracotta);
+      box-shadow: 0 4px 12px rgba(217,93,57,.4);
+    }
+
+    .story-info { flex: 1; min-width: 0; }
+    .story-title {
+      font-size: 13px; font-weight: 700;
+      color: var(--violet);
+      margin-bottom: 4px;
+    }
+    .story-snippet {
+      font-size: 11px;
+      color: rgba(59,43,58,.55);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .story-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .lang-pill {
+      font-size: 10px; font-weight: 700;
+      background: rgba(217,93,57,.12);
+      color: var(--terracotta);
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+    .story-date { font-size: 10px; color: rgba(59,43,58,.4); }
+    .member-row { display: flex; align-items: center; gap: 5px; }
+    .member-avatar {
+      width: 16px; height: 16px;
+      background: var(--indigo);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 700; color: var(--lavender);
+    }
+    .member-name { font-size: 10px; color: rgba(59,43,58,.4); }
+
+    /* ─── GRADIENT HEADER ─────────────────────────────────── */
+    .header-examples { display: flex; gap: 16px; flex-wrap: wrap; max-width: 1100px; margin: 0 auto; }
+    .lib-header {
+      flex: 1; min-width: 260px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.3);
+    }
+    .lib-header-inner {
+      padding: 20px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .lib-header-name { font-size: 16px; font-weight: 900; color: white; }
+    .lib-header-invite { font-size: 11px; color: rgba(255,255,255,.45); margin-top: 2px; font-family: monospace; letter-spacing: .08em; }
+    .lib-header-invite span { color: var(--terracotta); font-weight: 700; }
+
+    .grad-a { background: linear-gradient(135deg, var(--violet) 0%, var(--indigo) 100%); }
+    .grad-b { background: linear-gradient(135deg, #2A1A2A 0%, #3B3B58 100%); }
+    .grad-c { background: linear-gradient(135deg, var(--violet) 0%, #4E3068 60%, var(--indigo) 100%); }
+
+    .header-label { font-size: 10px; color: #666; text-align: center; padding: 8px; }
+
+    .note { font-size: 11px; color: #555; text-align: center; margin-top: 48px; }
+  </style>
+</head>
+<body>
+
+  <!-- ── 1. WELCOME SCREENS ── -->
+  <h2>Welcome screen — Option A (dark violet bg) vs Option B (terracotta hero)</h2>
+  <div class="row">
+
+    <!-- Option A -->
+    <div class="welcome welcome-a">
+      <div class="welcome-inner">
+        <div class="logo-box">🌳</div>
+        <h1>kahani</h1>
+        <div class="sub">कहानी · قصة · 故事</div>
+        <div class="tagline-card">
+          <p>Preserve your family's voice, <span>for every generation.</span></p>
+          <small>Record stories in any language. Transcribed, translated, and saved for your whole family — forever.</small>
+        </div>
+        <div class="pills">
+          <span class="pill">🎙 Record</span>
+          <span class="pill">🌍 Translate</span>
+          <span class="pill">📖 Preserve</span>
+          <span class="pill">👨‍👩‍👧 Share</span>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-bottom:10px">Get started</button>
+        <button class="btn btn-outline-dark" style="width:100%">Sign in</button>
+      </div>
+    </div>
+
+    <!-- Option B -->
+    <div class="welcome welcome-b">
+      <div class="welcome-inner">
+        <div class="hero">
+          <div class="logo-box">🌳</div>
+          <h1>kahani</h1>
+          <div class="sub">कहानी · قصة · 故事</div>
+        </div>
+        <div class="tagline-card">
+          <p>Preserve your family's voice, <span>for every generation.</span></p>
+          <small>Record stories in any language. Transcribed, translated, and saved for your whole family — forever.</small>
+        </div>
+        <div class="pills">
+          <span class="pill">🎙 Record</span>
+          <span class="pill">🌍 Translate</span>
+          <span class="pill">📖 Preserve</span>
+          <span class="pill">👨‍👩‍👧 Share</span>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-bottom:10px">Get started</button>
+        <button class="btn btn-outline-light" style="width:100%">Sign in</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── 2. BUTTONS ── -->
+  <h2>Buttons — hover over each one</h2>
+  <div class="btn-grid">
+
+    <div class="btn-group">
+      <div class="btn-group-label">On dark background</div>
+      <button class="btn btn-primary">Get started →</button>
+      <button class="btn btn-outline-dark">Sign in</button>
+      <button class="btn btn-indigo">Secondary action</button>
+      <button class="btn btn-lavender">Tertiary / ghost</button>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn btn-record" style="flex:1">🎙 Record</button>
+        <button class="btn btn-record" style="flex:1;background:rgba(245,233,224,.1);box-shadow:none;color:var(--linen)">Sign out</button>
+      </div>
+    </div>
+
+    <div class="btn-group-light">
+      <div class="btn-group-label">On linen / light background</div>
+      <button class="btn btn-primary">Process Story ✨</button>
+      <button class="btn btn-outline-light">Re-record</button>
+      <button class="btn btn-indigo">Save to library 📖</button>
+    </div>
+
+  </div>
+
+  <!-- ── 3. STORY CARDS ── -->
+  <h2>Story cards — hover over each card</h2>
+  <div class="cards-bg">
+    <div class="chapter-header">
+      <div class="chapter-icon">🌱</div>
+      <div>
+        <div class="chapter-title">Childhood</div>
+        <div class="chapter-count">2 stories</div>
+      </div>
+    </div>
+    <div class="story-cards-list">
+      <div class="story-card">
+        <div class="play-btn">▶</div>
+        <div class="story-info">
+          <div class="story-title">My first day of school in Gujarat</div>
+          <div class="story-snippet">I remember walking through the gate, holding my mother's hand very tight. The smell of chalk dust and jasmine flowers…</div>
+          <div class="story-meta">
+            <div class="member-row">
+              <div class="member-avatar">N</div>
+              <span class="member-name">Nani</span>
+            </div>
+            <span class="lang-pill">Gujarati</span>
+            <span class="story-date">Apr 14, 2026</span>
+          </div>
+        </div>
+      </div>
+      <div class="story-card">
+        <div class="play-btn">▶</div>
+        <div class="story-info">
+          <div class="story-title">The mango tree behind our house</div>
+          <div class="story-snippet">Every summer we would climb that tree and eat mangoes until our stomachs hurt. My brother always got to the top first…</div>
+          <div class="story-meta">
+            <div class="member-row">
+              <div class="member-avatar">D</div>
+              <span class="member-name">Dada</span>
+            </div>
+            <span class="lang-pill">Hindi</span>
+            <span class="story-date">Apr 12, 2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 4. HEADER GRADIENTS ── -->
+  <h2>Library header gradient — three options (most obvious → subtle)</h2>
+  <div class="header-examples">
+
+    <div class="lib-header">
+      <div class="lib-header-inner grad-c">
+        <div>
+          <div class="lib-header-name">🌳 The Salunke Family</div>
+          <div class="lib-header-invite">Invite: <span>KAH-2847</span></div>
+        </div>
+        <button class="btn btn-record" style="width:auto">🎙 Record</button>
+      </div>
+      <div class="header-label">Most obvious — Violet → Purple → Indigo</div>
+    </div>
+
+    <div class="lib-header">
+      <div class="lib-header-inner grad-a">
+        <div>
+          <div class="lib-header-name">🌳 The Salunke Family</div>
+          <div class="lib-header-invite">Invite: <span>KAH-2847</span></div>
+        </div>
+        <button class="btn btn-record" style="width:auto">🎙 Record</button>
+      </div>
+      <div class="header-label">Medium — Violet → Indigo</div>
+    </div>
+
+    <div class="lib-header">
+      <div class="lib-header-inner grad-b">
+        <div>
+          <div class="lib-header-name">🌳 The Salunke Family</div>
+          <div class="lib-header-invite">Invite: <span>KAH-2847</span></div>
+        </div>
+        <button class="btn btn-record" style="width:auto">🎙 Record</button>
+      </div>
+      <div class="header-label">Subtle — Deep violet → Indigo</div>
+    </div>
+
+  </div>
+
+  <p class="note">Hex codes: #3B2B3A · #F5E9E0 · #D95D39 · #D5D9EC · #3B3B58</p>
+
+</body>
+</html>
