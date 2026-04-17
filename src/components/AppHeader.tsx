@@ -20,7 +20,10 @@ export function AppHeader({ showBack = false, backTo, onBack, title, subtitle, r
   }
 
   return (
-    <div className="bg-[#3B2B3A] border-b border-[#F5E9E0]/08 px-4 py-4 flex items-center gap-3 sticky top-0 z-10">
+    <div
+      className="bg-[#3B2B3A] border-b border-[#F5E9E0]/08 px-4 py-4 flex items-center gap-3 sticky top-0 z-10"
+      style={{ paddingTop: 'max(16px, env(safe-area-inset-top))' }}
+    >
       {showBack && (
         <button onClick={handleBack} className="text-[#F5E9E0] hover:opacity-60 transition-opacity flex-shrink-0 p-1 -ml-1">
           <ArrowLeft className="w-6 h-6" />
