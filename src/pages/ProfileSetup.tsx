@@ -13,7 +13,7 @@ const LANGUAGES = [
   // Global
   'English', 'Arabic', 'French', 'Mandarin', 'Portuguese', 'Spanish',
   // South & Southeast Asian
-  'Bengali', 'Gujarati', 'Hindi', 'Marathi', 'Punjabi', 'Tamil', 'Telugu', 'Tagalog',
+  'Bengali', 'Gujarati', 'Hindi', 'Marathi', 'Punjabi', 'Tamil', 'Telugu', 'Tagalog', 'Urdu',
   // East Asian
   'Japanese', 'Korean',
   // Other
