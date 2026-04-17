@@ -171,8 +171,8 @@ export default function Library() {
       >
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#F5E9E0] rounded-xl flex items-center justify-center flex-shrink-0 shadow-[0_2px_8px_rgba(0,0,0,0.2)] overflow-hidden">
-              <img src="/logo-orange.png" alt="Kahani" className="w-full h-full object-contain p-0.5" />
+            <div className="w-9 h-9 flex-shrink-0">
+              <img src="/logo-orange.png" alt="Kahani" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="font-black text-[#F5E9E0] text-lg tracking-tight leading-tight">

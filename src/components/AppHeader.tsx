@@ -28,8 +28,8 @@ export function AppHeader({ showBack = false, backTo, onBack, title, subtitle, r
       )}
 
       {!showBack && (
-        <div className="w-8 h-8 bg-[#F5E9E0] rounded-xl flex items-center justify-center flex-shrink-0 shadow-[0_2px_8px_rgba(0,0,0,0.2)] overflow-hidden">
-          <img src="/logo-orange.png" alt="Kahani" className="w-full h-full object-contain p-0.5" />
+        <div className="w-8 h-8 flex-shrink-0">
+          <img src="/logo-orange.png" alt="Kahani" className="w-full h-full object-contain" />
         </div>
       )}
 
