@@ -10,14 +10,19 @@ export default function Welcome() {
       <div style={{ paddingTop: 'env(safe-area-inset-top)' }} />
 
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-8">
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-lg">
 
           {/* Logo — large hero */}
           <div className="flex flex-col items-center mb-10">
             <div className="w-44 h-44 mb-6 drop-shadow-[0_12px_32px_rgba(217,93,57,0.55)]">
               <img src="/logo-orange.png" alt="Kahani" className="w-full h-full object-contain" />
             </div>
-            <h1 className="text-6xl font-black text-[#D95D39] tracking-tight">kahani</h1>
+            <h1
+              className="text-6xl text-[#D95D39] tracking-tight"
+              style={{ fontFamily: "'Shrikhand', cursive" }}
+            >
+              KAHANI
+            </h1>
             <p className="text-[#D5D9EC] font-semibold text-base mt-2 tracking-wide">
               कहानी · historia · 物語
             </p>
@@ -25,17 +30,15 @@ export default function Welcome() {
 
           {/* Tagline card — glowing border */}
           <div className="rounded-3xl p-6 mb-8 border border-[#D95D39]/40 shadow-[0_0_32px_rgba(217,93,57,0.15)] bg-[#F5E9E0]/06">
-            <p className="text-[#F5E9E0] text-xl font-bold leading-snug">
-              Preserve your family's stories and share across every generation.
-            </p>
-            <p className="text-[#D95D39] font-semibold text-sm mt-3">
-              For your whole family, forever.
+            <p className="text-xl font-bold leading-snug">
+              <span className="text-[#F5E9E0]">Preserve your family's stories </span>
+              <span className="text-[#D95D39]">and share across every generation.</span>
             </p>
 
-            {/* Pills inside the card */}
-            <div className="flex flex-wrap gap-2 mt-4">
+            {/* Pills — single row */}
+            <div className="flex gap-2 mt-4 overflow-x-auto pb-0.5">
               {['🎙 Record', '🌍 Translate', '📖 Preserve', '👨‍👩‍👧 Share'].map(f => (
-                <span key={f} className="bg-[#F5E9E0]/12 text-[#F5E9E0] text-xs font-semibold px-3 py-1.5 rounded-full">
+                <span key={f} className="bg-[#F5E9E0]/12 text-[#F5E9E0] text-xs font-semibold px-3 py-1.5 rounded-full whitespace-nowrap flex-shrink-0">
                   {f}
                 </span>
               ))}

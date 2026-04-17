@@ -27,7 +27,7 @@ export default function SignIn() {
     <div className="min-h-screen bg-[#3B2B3A] flex flex-col">
       <AppHeader showBack backTo="/welcome" />
 
-      <div className="flex-1 flex flex-col justify-center px-6 py-8 max-w-sm mx-auto w-full">
+      <div className="flex-1 flex flex-col justify-center px-6 py-8 max-w-lg mx-auto w-full">
         <div className="mb-8">
           <h2 className="text-4xl font-black text-[#F5E9E0] tracking-tight">Welcome back</h2>
           <p className="text-[#D5D9EC]/60 mt-1">Your family's stories are waiting.</p>
