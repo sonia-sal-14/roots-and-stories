@@ -43,7 +43,7 @@ export function AppHeader({ showBack = false, backTo, onBack, title, subtitle, r
             {subtitle && <div className="text-xs text-[#D5D9EC]/60 truncate">{subtitle}</div>}
           </>
         ) : (
-          <span className="font-black text-[#F5E9E0] text-xl tracking-tight">kahani</span>
+          <span className="text-[#D95D39] text-xl tracking-tight" style={{ fontFamily: "'Shrikhand', cursive" }}>KAHANI</span>
         )}
       </div>
 
