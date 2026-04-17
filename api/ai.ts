@@ -31,6 +31,7 @@ const LANGUAGE_CODES: Record<string, string> = {
   Spanish: 'es',
   Hindi: 'hi',
   Marathi: 'mr',
+  Urdu: 'ur',
   Tamil: 'ta',
   Tagalog: 'tl',
   Japanese: 'ja',
