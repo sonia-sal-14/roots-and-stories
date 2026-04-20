@@ -5,6 +5,8 @@ import { ProtectedRoute } from '@/components/ProtectedRoute'
 import Welcome from '@/pages/Welcome'
 import SignUp from '@/pages/SignUp'
 import SignIn from '@/pages/SignIn'
+import ForgotPassword from '@/pages/ForgotPassword'
+import ResetPassword from '@/pages/ResetPassword'
 import ProfileSetup from '@/pages/ProfileSetup'
 import FamilySetup from '@/pages/FamilySetup'
 import Library from '@/pages/Library'
@@ -21,6 +23,8 @@ export default function App() {
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Semi-protected: require auth but no family yet */}
           <Route path="/profile-setup" element={

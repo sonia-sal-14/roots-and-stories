@@ -41,7 +41,12 @@ export default function SignIn() {
                 onChange={e => setEmail(e.target.value)} required autoComplete="email" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-[#3B2B3A]">Password</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password" className="text-[#3B2B3A]">Password</Label>
+                <Link to="/forgot-password" className="text-xs text-[#D95D39] hover:underline font-semibold">
+                  Forgot password?
+                </Link>
+              </div>
               <Input id="password" type="password" placeholder="Your password" value={password}
                 onChange={e => setPassword(e.target.value)} required autoComplete="current-password" />
             </div>
