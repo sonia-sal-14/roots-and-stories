@@ -16,6 +16,7 @@ export default function StoryDetail() {
   const [story, setStory] = useState<Story | null>(null)
   const [member, setMember] = useState<FamilyMember | null>(null)
   const [chapter, setChapter] = useState<Chapter | null>(null)
+  const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -48,6 +49,20 @@ export default function StoryDetail() {
     }
 
     setStory(storyData)
+
+    // Resolve audio URL — new stories store a path, old ones store a full URL
+    if (storyData.audio_url) {
+      if (storyData.audio_url.startsWith('http')) {
+        // Old format: full public URL — use as-is (will break once bucket is private)
+        setAudioUrl(storyData.audio_url)
+      } else {
+        // New format: storage path — generate a 1-hour signed URL
+        const { data: signed } = await supabase.storage
+          .from('story-audio')
+          .createSignedUrl(storyData.audio_url, 3600)
+        if (signed) setAudioUrl(signed.signedUrl)
+      }
+    }
 
     // Fetch member and chapter in parallel
     const [memberRes, chapterRes] = await Promise.all([
@@ -149,11 +164,11 @@ export default function StoryDetail() {
         </div>
 
         {/* Audio Player */}
-        {story.audio_url && (
+        {audioUrl && (
           <div className="bg-[#F5E9E0] rounded-2xl shadow-lg p-5">
             <audio
               ref={audioRef}
-              src={story.audio_url}
+              src={audioUrl}
               onTimeUpdate={() => {
                 if (!audioRef.current) return
                 setCurrentTime(audioRef.current.currentTime)

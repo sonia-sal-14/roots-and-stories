@@ -83,18 +83,14 @@ export default function ChapterConfirmation() {
 
       if (uploadError) throw new Error(uploadError.message)
 
-      const { data: urlData } = supabase.storage
-        .from('story-audio')
-        .getPublicUrl(audioPath)
-
-      // 2. Insert story
+      // 2. Insert story — store the storage path, not a public URL
       const { error: storyError } = await supabase.from('stories').insert({
         family_group_id: familyGroupId,
         chapter_id: selectedChapterId || null,
         created_by: user.id,
         title: title.trim() || 'Untitled story',
         original_language: state.language,
-        audio_url: urlData.publicUrl,
+        audio_url: audioPath,
         transcript_original: state.transcript_original,
         transcript_english: state.transcript_english,
         ai_suggested_chapter: state.ai_suggested_chapter,
