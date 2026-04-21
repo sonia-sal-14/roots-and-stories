@@ -16,9 +16,19 @@ export async function transcribeAndTranslate(
   mimeType: string,
   language: string
 ): Promise<TranscribeResult> {
+  // Attach the current user's session token so the serverless function can
+  // verify identity and enforce per-user rate limits.
+  const { supabase } = await import('@/lib/supabase')
+  const { data: { session } } = await supabase.auth.getSession()
+
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+  if (session?.access_token) {
+    headers['Authorization'] = `Bearer ${session.access_token}`
+  }
+
   const response = await fetch('/api/ai', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({
       action: 'transcribe_and_translate',
       payload: { audioBase64, mimeType, language },
@@ -27,6 +37,12 @@ export async function transcribeAndTranslate(
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+    if (response.status === 429) {
+      throw new AIError(errorData.error ?? "You've reached today's recording limit. Come back tomorrow!")
+    }
+    if (response.status === 401) {
+      throw new AIError(errorData.error ?? 'Please sign in to record a story.')
+    }
     throw new AIError(errorData.error ?? `Request failed with status ${response.status}`)
   }
 
