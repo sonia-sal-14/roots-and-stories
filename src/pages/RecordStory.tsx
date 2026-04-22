@@ -174,22 +174,9 @@ export default function RecordStory() {
         {/* ── IDLE: Big record button ── */}
         {recordingState === 'idle' && (
           <div className="flex flex-col items-center w-full">
-            <div className="text-center mb-10">
-              <p className="text-[#F5E9E0] text-lg">Press the button and start speaking.</p>
-              <p className="text-[#D5D9EC]/60 text-sm mt-1">Speak naturally — we'll handle the rest.</p>
-            </div>
 
-            <button
-              onClick={startRecording}
-              className="w-40 h-40 rounded-full bg-[#D95D39] shadow-[0_8px_32px_rgba(217,93,57,0.5)] flex items-center justify-center hover:bg-[#B84A2A] active:scale-95 transition-all mb-10 group"
-            >
-              <Mic className="w-16 h-16 text-white group-hover:scale-110 transition-transform" />
-            </button>
-
-            <p className="text-[#D95D39] font-semibold text-lg mb-8">Press to Record</p>
-
-            {/* Language selector */}
-            <div className="w-full bg-[#F5E9E0]/08 rounded-2xl p-4 mb-4">
+            {/* Language selector — first, so it's set before recording */}
+            <div className="w-full bg-[#F5E9E0]/08 rounded-2xl p-4 mb-6">
               <div className="space-y-2">
                 <Label className="text-[#F5E9E0]">I will speak in...</Label>
                 <Select value={language} onValueChange={setLanguage}>
@@ -202,6 +189,18 @@ export default function RecordStory() {
                 </Select>
               </div>
             </div>
+
+            {/* Record button */}
+            <p className="text-[#D5D9EC]/60 text-sm mb-6">Press the button and start speaking.</p>
+
+            <button
+              onClick={startRecording}
+              className="w-40 h-40 rounded-full bg-[#D95D39] shadow-[0_8px_32px_rgba(217,93,57,0.5)] flex items-center justify-center hover:bg-[#B84A2A] active:scale-95 transition-all mb-4 group"
+            >
+              <Mic className="w-16 h-16 text-white group-hover:scale-110 transition-transform" />
+            </button>
+
+            <p className="text-[#D95D39] font-semibold text-lg mb-8">Press to Record</p>
 
             {/* Title input */}
             <div className="w-full bg-[#F5E9E0]/08 rounded-2xl p-4 mb-4">

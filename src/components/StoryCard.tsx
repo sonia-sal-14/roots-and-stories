@@ -37,11 +37,19 @@ export function StoryCard({ story, member }: StoryCardProps) {
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             {member && (
               <div className="flex items-center gap-1">
-                <div className="w-5 h-5 rounded-full bg-[#3B3B58] flex items-center justify-center flex-shrink-0">
-                  <span className="text-[#D5D9EC] text-[9px] font-bold">
-                    {member.display_name.charAt(0).toUpperCase()}
-                  </span>
-                </div>
+                {member.photo_url ? (
+                  <img
+                    src={member.photo_url}
+                    alt={member.display_name}
+                    className="w-5 h-5 rounded-full object-cover flex-shrink-0"
+                  />
+                ) : (
+                  <div className="w-5 h-5 rounded-full bg-[#3B3B58] flex items-center justify-center flex-shrink-0">
+                    <span className="text-[#D5D9EC] text-[9px] font-bold">
+                      {member.display_name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                )}
                 <span className="text-[#3B2B3A]/40 text-[10px]">{member.display_name}</span>
               </div>
             )}
