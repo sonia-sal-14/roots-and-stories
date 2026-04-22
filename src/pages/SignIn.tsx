@@ -30,7 +30,7 @@ export default function SignIn() {
       <div className="flex-1 flex flex-col justify-center px-6 py-8 max-w-lg mx-auto w-full">
         <div className="mb-8">
           <h2 className="text-4xl font-black text-[#F5E9E0] tracking-tight">Welcome back</h2>
-          <p className="text-[#D5D9EC]/60 mt-1">Your family's stories are waiting.</p>
+          <p className="text-[#D5D9EC]/60 mt-1">It's time to share your story.</p>
         </div>
 
         <div className="bg-[#F5E9E0] rounded-3xl p-6 shadow-lg">
