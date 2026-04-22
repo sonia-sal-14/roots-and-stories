@@ -8,7 +8,7 @@ import { ChapterModal } from '@/components/ChapterModal'
 import { Button } from '@/components/ui/button'
 import {
   Mic, ChevronDown, ChevronUp,
-  Plus, Settings, ArrowUp, ArrowDown,
+  Plus, Settings, LogOut, ArrowUp, ArrowDown,
 } from 'lucide-react'
 
 const CHAPTER_EMOJIS: Record<string, string> = {
@@ -21,7 +21,7 @@ const chapterEmoji = (title: string) => CHAPTER_EMOJIS[title] ?? '📖'
 
 export default function Library() {
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
 
   const [familyGroup, setFamilyGroup] = useState<FamilyGroup | null>(null)
   const [chapters, setChapters] = useState<Chapter[]>([])
@@ -115,6 +115,11 @@ export default function Library() {
 
   const uncategorisedStories = stories.filter(s => !s.chapter_id)
 
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/welcome')
+  }
+
   // ── Loading ──────────────────────────────────────────────
   if (loading) {
     return (
@@ -201,6 +206,13 @@ export default function Library() {
               title="Account settings"
             >
               <Settings className="w-5 h-5" />
+            </button>
+            <button
+              onClick={handleSignOut}
+              className="p-2 text-[#D5D9EC]/40 hover:text-[#F5E9E0] transition-colors"
+              title="Sign out"
+            >
+              <LogOut className="w-5 h-5" />
             </button>
           </div>
         </div>

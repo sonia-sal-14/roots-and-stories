@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/AuthContext'
 import { AppHeader } from '@/components/AppHeader'
-import { Button } from '@/components/ui/button'
 import { LogOut, UserMinus, Trash2, ChevronRight, Shield } from 'lucide-react'
 
 type ConfirmMode = null | 'leave' | 'delete'
