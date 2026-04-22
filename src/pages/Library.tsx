@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import {
   Mic, ChevronDown, ChevronUp,
   Plus, Settings, LogOut, ArrowUp, ArrowDown,
+  Copy, Check, Search, X,
 } from 'lucide-react'
 
 const CHAPTER_EMOJIS: Record<string, string> = {
@@ -31,6 +32,8 @@ export default function Library() {
   const [error, setError] = useState('')
   const [openChapters, setOpenChapters] = useState<Set<string>>(new Set())
   const [showChapterModal, setShowChapterModal] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const [search, setSearch] = useState('')
 
   // Fetch everything
   const loadData = async () => {
@@ -120,6 +123,22 @@ export default function Library() {
     navigate('/welcome')
   }
 
+  const handleCopyInvite = () => {
+    if (!familyGroup?.invite_code) return
+    navigator.clipboard.writeText(familyGroup.invite_code)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  // Search filter — matches title or English transcript (case-insensitive)
+  const q = search.trim().toLowerCase()
+  const filteredStories = q
+    ? stories.filter(s =>
+        s.title?.toLowerCase().includes(q) ||
+        s.transcript_english?.toLowerCase().includes(q)
+      )
+    : stories
+
   // ── Loading ──────────────────────────────────────────────
   if (loading) {
     return (
@@ -186,9 +205,16 @@ export default function Library() {
               <div className="font-black text-[#F5E9E0] text-base tracking-tight leading-tight">
                 {familyGroup?.name ?? 'kahani'}
               </div>
-              <div className="text-xs text-[#D5D9EC]/50">
-                Invite: <span className="font-mono font-bold tracking-widest text-[#D95D39]">{familyGroup?.invite_code}</span>
-              </div>
+              <button
+                onClick={handleCopyInvite}
+                className="flex items-center gap-1.5 text-xs text-[#D5D9EC]/50 hover:text-[#D5D9EC]/80 transition-colors group"
+                title="Copy invite code"
+              >
+                <span>Invite: <span className="font-mono font-bold tracking-widest text-[#D95D39]">{familyGroup?.invite_code}</span></span>
+                {copied
+                  ? <Check className="w-3 h-3 text-green-400 flex-shrink-0" />
+                  : <Copy className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />}
+              </button>
             </div>
           </div>
 
@@ -221,8 +247,48 @@ export default function Library() {
       {/* Content */}
       <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
 
+        {/* Search bar */}
+        {stories.length > 0 && (
+          <div className="relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#F5E9E0]/30 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search stories..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full bg-[#F5E9E0]/08 border border-[#F5E9E0]/10 rounded-2xl pl-10 pr-10 py-3 text-[#F5E9E0] placeholder-[#F5E9E0]/30 text-sm focus:outline-none focus:border-[#D95D39]/50 transition-colors"
+            />
+            {search && (
+              <button
+                onClick={() => setSearch('')}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#F5E9E0]/30 hover:text-[#F5E9E0]/60 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Search results */}
+        {q && (
+          <div className="space-y-3">
+            {filteredStories.length === 0 ? (
+              <div className="text-center py-10">
+                <p className="text-[#D5D9EC]/50 text-sm">No stories match "<span className="text-[#F5E9E0]">{search}</span>"</p>
+              </div>
+            ) : (
+              <>
+                <p className="text-xs text-[#D5D9EC]/40 px-1">{filteredStories.length} {filteredStories.length === 1 ? 'story' : 'stories'} found</p>
+                {filteredStories.map(story => (
+                  <StoryCard key={story.id} story={story} member={getMemberById(story.created_by)} />
+                ))}
+              </>
+            )}
+          </div>
+        )}
+
         {/* Empty state */}
-        {chapters.length === 0 && stories.length === 0 && (
+        {!q && chapters.length === 0 && stories.length === 0 && (
           <div className="text-center py-16">
             <div className="text-6xl mb-4">📖</div>
             <h2 className="text-2xl font-bold text-[#F5E9E0] mb-2">
@@ -238,8 +304,8 @@ export default function Library() {
           </div>
         )}
 
-        {/* Chapters accordion */}
-        {chapters.map((chapter, idx) => {
+        {/* Chapters accordion — hidden during search */}
+        {!q && chapters.map((chapter, idx) => {
           const chapterStories = getStoriesForChapter(chapter.id)
           const isOpen = openChapters.has(chapter.id)
 
@@ -301,8 +367,8 @@ export default function Library() {
           )
         })}
 
-        {/* Uncategorised stories */}
-        {uncategorisedStories.length > 0 && (
+        {/* Uncategorised stories — hidden during search */}
+        {!q && uncategorisedStories.length > 0 && (
           <div className="bg-[#F5E9E0] rounded-2xl shadow-lg overflow-hidden">
             <div className="px-5 py-4 border-b border-[#3B2B3A]/08">
               <div className="font-bold text-[#3B2B3A]/50 text-sm uppercase tracking-wide">Uncategorised</div>
@@ -319,14 +385,14 @@ export default function Library() {
           </div>
         )}
 
-        {/* Add chapter button */}
-        <button
+        {/* Add chapter button — hidden during search */}
+        {!q && <button
           onClick={() => setShowChapterModal(true)}
           className="w-full py-4 border-2 border-dashed border-[#F5E9E0]/20 rounded-2xl text-[#F5E9E0]/40 hover:border-[#F5E9E0]/40 hover:text-[#F5E9E0] transition-colors flex items-center justify-center gap-2 text-sm font-medium"
         >
           <Plus className="w-4 h-4" />
           Add a chapter
-        </button>
+        </button>}
 
         {/* Bottom spacer for floating button + safe area */}
         <div style={{ height: 'calc(env(safe-area-inset-bottom) + 88px)' }} />
