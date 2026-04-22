@@ -13,6 +13,8 @@ import Library from '@/pages/Library'
 import RecordStory from '@/pages/RecordStory'
 import ChapterConfirmation from '@/pages/ChapterConfirmation'
 import StoryDetail from '@/pages/StoryDetail'
+import AccountSettings from '@/pages/AccountSettings'
+import Privacy from '@/pages/Privacy'
 
 export default function App() {
   return (
@@ -25,6 +27,7 @@ export default function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/privacy" element={<Privacy />} />
 
           {/* Semi-protected: require auth but no family yet */}
           <Route path="/profile-setup" element={
@@ -46,6 +49,9 @@ export default function App() {
           } />
           <Route path="/story/:id" element={
             <ProtectedRoute><StoryDetail /></ProtectedRoute>
+          } />
+          <Route path="/settings" element={
+            <ProtectedRoute><AccountSettings /></ProtectedRoute>
           } />
 
           {/* Default redirect */}

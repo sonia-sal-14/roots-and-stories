@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 
 export default function Welcome() {
@@ -56,7 +56,8 @@ export default function Welcome() {
           </div>
 
           <p className="text-center text-xs text-[#D5D9EC]/50 mt-6">
-            🔒 Private & secure. Only your family can access your stories.
+            🔒 Private & secure. Only your family can access your stories.{' '}
+            <Link to="/privacy" className="underline hover:text-[#D5D9EC]/80">Privacy policy</Link>
           </p>
         </div>
       </div>
