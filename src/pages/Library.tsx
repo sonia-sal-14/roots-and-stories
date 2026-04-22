@@ -8,7 +8,7 @@ import { ChapterModal } from '@/components/ChapterModal'
 import { Button } from '@/components/ui/button'
 import {
   Mic, ChevronDown, ChevronUp,
-  Plus, LogOut, ArrowUp, ArrowDown,
+  Plus, Settings, ArrowUp, ArrowDown,
 } from 'lucide-react'
 
 const CHAPTER_EMOJIS: Record<string, string> = {
@@ -21,7 +21,7 @@ const chapterEmoji = (title: string) => CHAPTER_EMOJIS[title] ?? '📖'
 
 export default function Library() {
   const navigate = useNavigate()
-  const { user, signOut } = useAuth()
+  const { user } = useAuth()
 
   const [familyGroup, setFamilyGroup] = useState<FamilyGroup | null>(null)
   const [chapters, setChapters] = useState<Chapter[]>([])
@@ -115,11 +115,6 @@ export default function Library() {
 
   const uncategorisedStories = stories.filter(s => !s.chapter_id)
 
-  const handleSignOut = async () => {
-    await signOut()
-    navigate('/welcome')
-  }
-
   // ── Loading ──────────────────────────────────────────────
   if (loading) {
     return (
@@ -142,8 +137,8 @@ export default function Library() {
           <Button size="lg" className="w-full mb-3" onClick={() => navigate('/family-setup')}>
             Set up your family
           </Button>
-          <button onClick={handleSignOut} className="text-sm text-[#D5D9EC]/50 hover:text-[#F5E9E0]">
-            Sign out
+          <button onClick={() => navigate('/settings')} className="text-sm text-[#D5D9EC]/50 hover:text-[#F5E9E0]">
+            Account settings
           </button>
         </div>
       </div>
@@ -201,11 +196,11 @@ export default function Library() {
               <span>Record</span>
             </button>
             <button
-              onClick={handleSignOut}
+              onClick={() => navigate('/settings')}
               className="p-2 text-[#D5D9EC]/40 hover:text-[#F5E9E0] transition-colors"
-              title="Sign out"
+              title="Account settings"
             >
-              <LogOut className="w-5 h-5" />
+              <Settings className="w-5 h-5" />
             </button>
           </div>
         </div>
