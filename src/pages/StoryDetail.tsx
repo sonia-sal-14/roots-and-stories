@@ -23,9 +23,9 @@ export default function StoryDetail() {
   // Audio player state
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
+  const [playError, setPlayError] = useState('')
 
   useEffect(() => {
     if (!id) return
@@ -50,17 +50,31 @@ export default function StoryDetail() {
 
     setStory(storyData)
 
-    // Resolve audio URL — new stories store a path, old ones store a full URL
+    // Resolve audio URL — new stories store a path, old ones store a full URL.
+    // The bucket is now private, so even old stories with full public URLs
+    // need to be re-signed.
     if (storyData.audio_url) {
-      if (storyData.audio_url.startsWith('http')) {
-        // Old format: full public URL — use as-is (will break once bucket is private)
-        setAudioUrl(storyData.audio_url)
-      } else {
-        // New format: storage path — generate a 1-hour signed URL
-        const { data: signed } = await supabase.storage
+      let storagePath: string | null = null
+
+      // Extract storage path from a Supabase public URL, e.g.
+      // https://<project>.supabase.co/storage/v1/object/public/story-audio/<path>
+      const publicMatch = storyData.audio_url.match(/\/storage\/v1\/object\/(?:public|sign)\/story-audio\/(.+?)(?:\?|$)/)
+      if (publicMatch) {
+        storagePath = decodeURIComponent(publicMatch[1])
+      } else if (!storyData.audio_url.startsWith('http')) {
+        // Relative path — already a storage path
+        storagePath = storyData.audio_url
+      }
+
+      if (storagePath) {
+        const { data: signed, error: signErr } = await supabase.storage
           .from('story-audio')
-          .createSignedUrl(storyData.audio_url, 3600)
+          .createSignedUrl(storagePath, 3600)
+        if (signErr) console.error('[StoryDetail] sign error:', signErr)
         if (signed) setAudioUrl(signed.signedUrl)
+      } else {
+        // Genuinely external URL — use as-is
+        setAudioUrl(storyData.audio_url)
       }
     }
 
@@ -80,7 +94,7 @@ export default function StoryDetail() {
   }
 
   const formatTime = (s: number) => {
-    if (isNaN(s)) return '0:00'
+    if (!isFinite(s) || isNaN(s) || s < 0) return '0:00'
     const m = Math.floor(s / 60)
     const sec = Math.floor(s % 60).toString().padStart(2, '0')
     return `${m}:${sec}`
@@ -91,21 +105,47 @@ export default function StoryDetail() {
       weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
     })
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (!audioRef.current) return
     if (isPlaying) {
       audioRef.current.pause()
+      setIsPlaying(false)
     } else {
-      audioRef.current.play()
+      try {
+        await audioRef.current.play()
+        setIsPlaying(true)
+      } catch (err) {
+        console.error('[StoryDetail] play() failed:', err)
+        setPlayError(err instanceof Error ? err.message : 'Could not play audio.')
+        setIsPlaying(false)
+      }
     }
-    setIsPlaying(!isPlaying)
   }
 
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value)
-    if (audioRef.current) audioRef.current.currentTime = value
-    setCurrentTime(value)
+  // ── Dynamic waveform bars ───────────────────────────────
+  // Deterministic per-story heights so the pattern is stable across renders.
+  const WAVEFORM_BARS = 22
+  const seededRandom = (seed: string, i: number) => {
+    let h = 0
+    const s = seed + i
+    for (let j = 0; j < s.length; j++) h = (h * 31 + s.charCodeAt(j)) >>> 0
+    return ((h % 1000) / 1000)
   }
+  const barHeights = Array.from({ length: WAVEFORM_BARS }, (_, i) => {
+    const r = seededRandom(story?.id ?? 'x', i)
+    return 0.35 + r * 0.65 // 0.35 → 1.0
+  })
+
+  const seekToBar = (i: number) => {
+    if (!audioRef.current || !duration) return
+    const t = ((i + 0.5) / WAVEFORM_BARS) * duration
+    audioRef.current.currentTime = t
+    setCurrentTime(t)
+  }
+
+  const playheadIndex = duration > 0
+    ? Math.floor((currentTime / duration) * WAVEFORM_BARS)
+    : -1
 
   // ── Loading ───────────────────────────────────────────────
   if (loading) {
@@ -166,46 +206,89 @@ export default function StoryDetail() {
         {/* Audio Player */}
         {audioUrl && (
           <div className="bg-[#F5E9E0] rounded-2xl shadow-lg p-5">
+            {playError && (
+              <div className="bg-[#D95D39]/10 border border-[#D95D39]/30 rounded-xl px-3 py-2 text-[#D95D39] text-xs mb-3">
+                {playError}
+              </div>
+            )}
             <audio
               ref={audioRef}
               src={audioUrl}
               onTimeUpdate={() => {
                 if (!audioRef.current) return
                 setCurrentTime(audioRef.current.currentTime)
-                setProgress(audioRef.current.duration
-                  ? (audioRef.current.currentTime / audioRef.current.duration) * 100
-                  : 0)
               }}
               onLoadedMetadata={() => {
-                if (audioRef.current) setDuration(audioRef.current.duration)
+                const a = audioRef.current
+                if (!a) return
+                // Chrome MediaRecorder WebM bug: duration is reported as Infinity
+                // until the file is fully scanned. Seeking past the end forces
+                // the browser to compute the real duration, then we seek back.
+                if (!isFinite(a.duration)) {
+                  a.currentTime = 1e10
+                } else {
+                  setDuration(a.duration)
+                }
+              }}
+              onDurationChange={() => {
+                const a = audioRef.current
+                if (!a) return
+                if (isFinite(a.duration) && a.duration > 0) {
+                  setDuration(a.duration)
+                  // If we forced a seek to find the duration, snap back to start.
+                  if (a.currentTime > a.duration) {
+                    a.currentTime = 0
+                    setCurrentTime(0)
+                  }
+                }
               }}
               onEnded={() => setIsPlaying(false)}
+              onError={() => setPlayError('Could not load audio. The recording may be unavailable.')}
             />
 
-            {/* Play button + scrubber */}
+            {/* Play button + dynamic waveform scrubber */}
             <div className="flex items-center gap-4">
               <button
                 onClick={togglePlay}
-                className="w-14 h-14 rounded-full bg-[#3B2B3A] flex items-center justify-center flex-shrink-0 hover:bg-[#D95D39] transition-colors shadow"
+                className={`w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 transition-colors shadow active:scale-95 ${
+                  isPlaying ? 'bg-[#D95D39]' : 'bg-[#3B2B3A] hover:bg-[#D95D39]'
+                }`}
               >
                 {isPlaying
                   ? <Pause className="w-6 h-6 text-white fill-current" />
                   : <Play className="w-6 h-6 text-white fill-current ml-0.5" />}
               </button>
 
-              <div className="flex-1">
-                <input
-                  type="range"
-                  min={0}
-                  max={duration || 100}
-                  value={currentTime}
-                  onChange={handleSeek}
-                  className="w-full h-2 rounded-full appearance-none cursor-pointer"
-                  style={{
-                    background: `linear-gradient(to right, #D95D39 ${progress}%, #3B2B3A20 ${progress}%)`,
-                  }}
-                />
-                <div className="flex justify-between text-xs text-[#3B2B3A]/50 mt-1">
+              <div className="flex-1 min-w-0">
+                {/* Waveform bars */}
+                <div className="flex items-center justify-between gap-[3px] h-12">
+                  {barHeights.map((h, i) => {
+                    const isPlayed = i < playheadIndex
+                    const isPlayhead = i === playheadIndex
+                    const barH = isPlayhead && isPlaying ? Math.min(1, h + 0.15) : h
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => seekToBar(i)}
+                        className="flex-1 rounded-full transition-all duration-150 cursor-pointer"
+                        style={{
+                          height: `${barH * 100}%`,
+                          background: isPlayhead
+                            ? '#D95D39'
+                            : isPlayed
+                              ? '#D95D39'
+                              : '#3B2B3A22',
+                          boxShadow: isPlayhead && isPlaying
+                            ? '0 0 12px rgba(217,93,57,0.7), 0 0 4px rgba(217,93,57,0.9)'
+                            : 'none',
+                          transform: isPlayhead && isPlaying ? 'scaleY(1.08)' : 'scaleY(1)',
+                        }}
+                        aria-label={`Seek to ${formatTime((i / WAVEFORM_BARS) * duration)}`}
+                      />
+                    )
+                  })}
+                </div>
+                <div className="flex justify-between text-xs font-mono text-[#3B2B3A]/50 mt-1.5">
                   <span>{formatTime(currentTime)}</span>
                   <span>{formatTime(duration)}</span>
                 </div>

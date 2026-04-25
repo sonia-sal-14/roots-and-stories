@@ -22,3 +22,66 @@ body {
 #root {
   min-height: 100vh;
 }
+
+/* ── Kahani animation keyframes ─────────────────────────── */
+
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 rgba(217,93,57,0.55), 0 8px 32px rgba(217,93,57,0.45); }
+  60%  { box-shadow: 0 0 0 22px rgba(217,93,57,0), 0 8px 32px rgba(217,93,57,0.45); }
+  100% { box-shadow: 0 0 0 0 rgba(217,93,57,0), 0 8px 32px rgba(217,93,57,0.45); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.85; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes spinReverse {
+  from { transform: rotate(360deg); }
+  to   { transform: rotate(0deg); }
+}
+
+/* ── Utility classes ────────────────────────────────────── */
+
+.animate-pulse-ring {
+  animation: pulseRing 2.8s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 2.4s ease-in-out infinite;
+}
+
+.animate-glow-pulse-delay {
+  animation: glowPulse 2.4s ease-in-out infinite 0.5s;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-screen-in {
+  animation: screenIn 0.35s ease-out;
+}
+
+.animate-spin-reverse {
+  animation: spinReverse 0.75s linear infinite;
+}
+
+/* Hide scrollbars but keep scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

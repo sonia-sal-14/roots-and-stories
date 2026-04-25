@@ -191,10 +191,10 @@ export default function Library() {
         <div
           className="max-w-2xl mx-auto flex items-center justify-between px-4 py-3 rounded-2xl border border-[#F5E9E0]/12"
           style={{
-            background: 'rgba(59, 43, 58, 0.75)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
+            background: 'rgba(59, 43, 58, 0.82)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            boxShadow: '0 4px 32px rgba(0,0,0,0.35)',
           }}
         >
           <div className="flex items-center gap-3">
@@ -402,9 +402,18 @@ export default function Library() {
       <div className="fixed right-6 sm:hidden" style={{ bottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}>
         <button
           onClick={() => navigate('/record')}
-          className="w-16 h-16 bg-[#D95D39] rounded-full shadow-lg flex items-center justify-center hover:bg-[#B84A2A] transition-colors shadow-[0_4px_16px_rgba(217,93,57,0.5)]"
+          className="w-16 h-16 rounded-full flex items-center justify-center active:scale-95 transition-transform"
+          style={{
+            background: 'linear-gradient(145deg, #E06040, #C84828)',
+            animation: 'pulseRing 2.8s ease-in-out infinite',
+          }}
         >
-          <Mic className="w-7 h-7 text-white" />
+          {/* Inset shine */}
+          <div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{ background: 'linear-gradient(145deg, rgba(255,255,255,0.15) 0%, transparent 60%)' }}
+          />
+          <Mic className="w-7 h-7 text-white relative z-10" />
         </button>
       </div>
 
