@@ -5,7 +5,10 @@ import { useAuth } from '@/lib/AuthContext'
 import type { Chapter, Story, FamilyMember, FamilyGroup } from '@/types/database'
 import { StoryCard } from '@/components/StoryCard'
 import { ChapterModal } from '@/components/ChapterModal'
+import { TutorialBanner } from '@/components/TutorialBanner'
 import { Button } from '@/components/ui/button'
+import { useTutorial } from '@/hooks/useTutorial'
+import { initTutorial } from '@/lib/tutorial'
 import {
   Mic, ChevronDown, ChevronUp,
   Plus, Settings, LogOut, ArrowUp, ArrowDown,
@@ -34,6 +37,7 @@ export default function Library() {
   const [showChapterModal, setShowChapterModal] = useState(false)
   const [copied, setCopied] = useState(false)
   const [search, setSearch] = useState('')
+  const { step, advance, skip } = useTutorial()
 
   // Fetch everything
   const loadData = async () => {
@@ -82,7 +86,10 @@ export default function Library() {
     }
   }
 
-  useEffect(() => { loadData() }, [user])
+  useEffect(() => {
+    loadData()
+    initTutorial()
+  }, [user])
 
   const toggleChapter = (id: string) => {
     setOpenChapters(prev => {
@@ -220,8 +227,8 @@ export default function Library() {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => navigate('/record')}
-              className="flex items-center gap-2 bg-[#D95D39] text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-[#B84A2A] transition-colors shadow-[0_4px_14px_rgba(217,93,57,0.4)]"
+              onClick={() => { if (step === '1') advance(); navigate('/record') }}
+              className={`flex items-center gap-2 bg-[#D95D39] text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-[#B84A2A] transition-colors shadow-[0_4px_14px_rgba(217,93,57,0.4)] ${step === '1' ? 'tutorial-glow' : ''}`}
             >
               <Mic className="w-4 h-4" />
               <span>Record</span>
@@ -401,11 +408,11 @@ export default function Library() {
       {/* Floating record button on mobile */}
       <div className="fixed right-6 sm:hidden" style={{ bottom: 'calc(env(safe-area-inset-bottom) + 16px)' }}>
         <button
-          onClick={() => navigate('/record')}
-          className="w-16 h-16 rounded-full flex items-center justify-center active:scale-95 transition-transform"
+          onClick={() => { if (step === '1') advance(); navigate('/record') }}
+          className={`w-16 h-16 rounded-full flex items-center justify-center active:scale-95 transition-transform ${step === '1' ? 'tutorial-glow' : ''}`}
           style={{
             background: 'linear-gradient(145deg, #E06040, #C84828)',
-            animation: 'pulseRing 2.8s ease-in-out infinite',
+            animation: step === '1' ? undefined : 'pulseRing 2.8s ease-in-out infinite',
           }}
         >
           {/* Inset shine */}
@@ -416,6 +423,15 @@ export default function Library() {
           <Mic className="w-7 h-7 text-white relative z-10" />
         </button>
       </div>
+
+      {/* Tutorial banner — step 1 */}
+      {step === '1' && (
+        <TutorialBanner
+          step={1}
+          body="Tap the record button to capture your first story"
+          onSkip={skip}
+        />
+      )}
 
       {/* Chapter modal */}
       {familyGroup && (

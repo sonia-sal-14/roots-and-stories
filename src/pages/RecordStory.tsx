@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { transcribeAndTranslate, blobToBase64 } from '@/lib/api'
 import { AppHeader } from '@/components/AppHeader'
+import { TutorialBanner } from '@/components/TutorialBanner'
+import { useTutorial } from '@/hooks/useTutorial'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { supabase } from '@/lib/supabase'
 import type { StoryPrompt } from '@/types/database'
-import { Mic, Square, Sparkles, Play, Pause } from 'lucide-react'
+import { Mic, Square, Sparkles, Play, Pause, RefreshCw, ArrowLeft } from 'lucide-react'
 
 const LANGUAGES = [
   // Global
@@ -52,13 +54,17 @@ export default function RecordStory() {
   const [title, setTitle] = useState('')
   const [language, setLanguage] = useState('English')
 
-  // Prompt strip
-  const [showPromptStrip, setShowPromptStrip] = useState(false)
+  // Prompts: 'closed' | 'single' (one suggestion + shuffle) | 'all' (browse list)
+  const [promptView, setPromptView] = useState<'closed' | 'single' | 'all'>('closed')
   const [prompts, setPrompts] = useState<StoryPrompt[]>([])
   const [promptsLoading, setPromptsLoading] = useState(false)
+  const [currentPromptIdx, setCurrentPromptIdx] = useState(0)
 
   // Error
   const [error, setError] = useState('')
+
+  // Tutorial
+  const { step, advance, skip } = useTutorial()
 
   // Refs
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
@@ -75,6 +81,7 @@ export default function RecordStory() {
 
   const startRecording = async () => {
     setError('')
+    if (step === '4') skip()
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       chunksRef.current = []
@@ -162,14 +169,47 @@ export default function RecordStory() {
     }
   }
 
-  const openPromptStrip = async () => {
-    setShowPromptStrip(prev => !prev)
-    if (prompts.length > 0) return
+  const openPrompts = async () => {
+    if (promptView !== 'closed') {
+      setPromptView('closed')
+      return
+    }
+    setPromptView('single')
+    if (prompts.length > 0) {
+      setCurrentPromptIdx(Math.floor(Math.random() * prompts.length))
+      return
+    }
     setPromptsLoading(true)
     const { data } = await supabase.from('story_prompts').select('*').order('category')
-    if (data) setPrompts(data)
+    if (data && data.length > 0) {
+      setPrompts(data)
+      setCurrentPromptIdx(Math.floor(Math.random() * data.length))
+    }
     setPromptsLoading(false)
   }
+
+  const shufflePrompt = () => {
+    if (prompts.length < 2) return
+    let next = currentPromptIdx
+    while (next === currentPromptIdx) {
+      next = Math.floor(Math.random() * prompts.length)
+    }
+    setCurrentPromptIdx(next)
+  }
+
+  const usePrompt = (text: string) => {
+    setTitle(text)
+    setPromptView('closed')
+    if (step === '2') advance()
+  }
+
+  // Group prompts by category for the "see all" view
+  const promptsByCategory = prompts.reduce<Record<string, StoryPrompt[]>>((acc, p) => {
+    const cat = p.category || 'Other'
+    if (!acc[cat]) acc[cat] = []
+    acc[cat].push(p)
+    return acc
+  }, {})
 
   const isProcessing = processingState !== 'idle'
 
@@ -190,10 +230,13 @@ export default function RecordStory() {
           <div className="flex flex-col items-center w-full">
 
             {/* Language selector — first, so it's set before recording */}
-            <div className="w-full bg-[#F5E9E0]/08 rounded-2xl p-4 mb-6">
+            <div className={`w-full bg-[#F5E9E0]/08 rounded-2xl p-4 mb-6 ${step === '3' ? 'tutorial-glow' : ''}`}>
               <div className="space-y-2">
                 <Label className="text-[#F5E9E0]">I will speak in...</Label>
-                <Select value={language} onValueChange={setLanguage}>
+                <Select
+                  value={language}
+                  onValueChange={v => { setLanguage(v); if (step === '3') advance() }}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -217,7 +260,7 @@ export default function RecordStory() {
               {/* Mic button */}
               <button
                 onClick={startRecording}
-                className="relative w-36 h-36 rounded-full flex items-center justify-center active:scale-95 transition-transform duration-150 animate-pulse-ring"
+                className={`relative w-36 h-36 rounded-full flex items-center justify-center active:scale-95 transition-transform duration-150 ${step === '4' ? 'tutorial-glow' : 'animate-pulse-ring'}`}
                 style={{
                   background: 'linear-gradient(145deg, #E06040, #C84828)',
                 }}
@@ -245,12 +288,12 @@ export default function RecordStory() {
               </div>
             </div>
 
-            {/* Prompt strip trigger */}
+            {/* "Need inspiration?" trigger */}
             <button
-              onClick={openPromptStrip}
-              className="flex items-center gap-2 font-semibold text-sm px-4 py-2.5 rounded-full transition-all active:scale-95"
+              onClick={openPrompts}
+              className={`flex items-center gap-2 font-semibold text-sm px-4 py-2.5 rounded-full transition-all active:scale-95 ${step === '2' ? 'tutorial-glow' : ''}`}
               style={{
-                background: showPromptStrip ? 'rgba(217,93,57,0.18)' : 'rgba(217,93,57,0.08)',
+                background: promptView !== 'closed' ? 'rgba(217,93,57,0.18)' : 'rgba(217,93,57,0.08)',
                 border: '1px solid rgba(217,93,57,0.25)',
                 color: '#D95D39',
               }}
@@ -259,48 +302,104 @@ export default function RecordStory() {
               Need inspiration?
             </button>
 
-            {/* Inline horizontal prompt strip */}
-            {showPromptStrip && (
-              <div className="w-full mt-3">
-                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                  {promptsLoading ? (
-                    <div className="flex items-center justify-center w-full py-6">
-                      <div className="w-5 h-5 border-2 border-[#D95D39] border-t-transparent rounded-full animate-spin" />
+            {/* Inline prompt area */}
+            {promptView !== 'closed' && (
+              <div className="w-full mt-4">
+                {promptsLoading ? (
+                  <div className="flex items-center justify-center py-10">
+                    <div className="w-6 h-6 border-2 border-[#D95D39] border-t-transparent rounded-full animate-spin" />
+                  </div>
+                ) : prompts.length === 0 ? (
+                  <p className="text-[#D5D9EC]/50 text-sm py-6 text-center">No prompts available right now.</p>
+                ) : promptView === 'single' ? (
+                  <div className="space-y-3">
+                    {/* Single suggested prompt card */}
+                    <div
+                      className="rounded-2xl p-5"
+                      style={{
+                        background: 'rgba(245,233,224,0.07)',
+                        border: '1px solid rgba(217,93,57,0.25)',
+                        boxShadow: '0 0 24px rgba(217,93,57,0.08)',
+                      }}
+                    >
+                      <div className="text-[10px] font-bold text-[#D95D39] uppercase tracking-widest mb-2">
+                        {prompts[currentPromptIdx]?.category}
+                      </div>
+                      <p className="text-[#F5E9E0] text-base leading-relaxed mb-4">
+                        {prompts[currentPromptIdx]?.prompt_text}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={shufflePrompt}
+                          className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-[#F5E9E0] text-sm font-semibold transition-colors active:scale-95"
+                          style={{
+                            background: 'rgba(245,233,224,0.08)',
+                            border: '1px solid rgba(245,233,224,0.15)',
+                          }}
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                          Try another
+                        </button>
+                        <button
+                          onClick={() => usePrompt(prompts[currentPromptIdx].prompt_text)}
+                          className="flex-1 bg-[#D95D39] text-white text-sm font-semibold px-3 py-2.5 rounded-xl hover:bg-[#B84A2A] transition-colors active:scale-95"
+                        >
+                          Use this
+                        </button>
+                      </div>
                     </div>
-                  ) : prompts.length === 0 ? (
-                    <p className="text-[#D5D9EC]/50 text-sm py-4 text-center w-full">No prompts available.</p>
-                  ) : (
-                    prompts.map(prompt => (
-                      <button
-                        key={prompt.id}
-                        onClick={() => {
-                          setTitle(prompt.prompt_text)
-                          setShowPromptStrip(false)
-                        }}
-                        className="flex-shrink-0 w-52 text-left rounded-2xl p-3 transition-all active:scale-95"
-                        style={{
-                          background: 'rgba(245,233,224,0.07)',
-                          border: '1px solid rgba(245,233,224,0.12)',
-                        }}
-                        onMouseEnter={e => {
-                          (e.currentTarget as HTMLButtonElement).style.background = 'rgba(217,93,57,0.12)'
-                          ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(217,93,57,0.3)'
-                        }}
-                        onMouseLeave={e => {
-                          (e.currentTarget as HTMLButtonElement).style.background = 'rgba(245,233,224,0.07)'
-                          ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(245,233,224,0.12)'
-                        }}
-                      >
-                        <div className="text-[10px] font-bold text-[#D95D39] uppercase tracking-wider mb-1.5">
-                          {prompt.category}
+
+                    {/* See all link */}
+                    <button
+                      onClick={() => setPromptView('all')}
+                      className="w-full text-center text-xs text-[#D5D9EC]/50 hover:text-[#F5E9E0] transition-colors py-1"
+                    >
+                      See all prompts →
+                    </button>
+                  </div>
+                ) : (
+                  /* All prompts grouped by category */
+                  <div className="space-y-4">
+                    <button
+                      onClick={() => setPromptView('single')}
+                      className="flex items-center gap-1.5 text-xs text-[#D5D9EC]/60 hover:text-[#F5E9E0] transition-colors"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      Back to suggestion
+                    </button>
+
+                    {Object.entries(promptsByCategory).map(([category, items]) => (
+                      <div key={category} className="space-y-2">
+                        <div className="text-[10px] font-bold text-[#D95D39] uppercase tracking-widest px-1">
+                          {category}
                         </div>
-                        <div className="text-[#F5E9E0] text-xs leading-relaxed line-clamp-3">
-                          {prompt.prompt_text}
-                        </div>
-                      </button>
-                    ))
-                  )}
-                </div>
+                        {items.map(prompt => (
+                          <button
+                            key={prompt.id}
+                            onClick={() => usePrompt(prompt.prompt_text)}
+                            className="w-full text-left rounded-xl p-3.5 transition-all active:scale-[0.99]"
+                            style={{
+                              background: 'rgba(245,233,224,0.07)',
+                              border: '1px solid rgba(245,233,224,0.12)',
+                            }}
+                            onMouseEnter={e => {
+                              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(217,93,57,0.12)'
+                              ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(217,93,57,0.3)'
+                            }}
+                            onMouseLeave={e => {
+                              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(245,233,224,0.07)'
+                              ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(245,233,224,0.12)'
+                            }}
+                          >
+                            <p className="text-[#F5E9E0] text-sm leading-relaxed">
+                              {prompt.prompt_text}
+                            </p>
+                          </button>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -450,6 +549,29 @@ export default function RecordStory() {
         )}
       </div>
 
+
+      {/* Tutorial banner — steps 2, 3, 4 (only on idle) */}
+      {recordingState === 'idle' && step === '2' && (
+        <TutorialBanner
+          step={2}
+          body="Tap 'Need inspiration?' to pick a prompt"
+          onSkip={skip}
+        />
+      )}
+      {recordingState === 'idle' && step === '3' && (
+        <TutorialBanner
+          step={3}
+          body="Choose the language you'll speak in"
+          onSkip={skip}
+        />
+      )}
+      {recordingState === 'idle' && step === '4' && (
+        <TutorialBanner
+          step={4}
+          body="Press and hold to record your story"
+          onSkip={skip}
+        />
+      )}
     </div>
   )
 }
