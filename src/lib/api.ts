@@ -36,14 +36,17 @@ export async function transcribeAndTranslate(
   })
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+    const errorData = await response.json().catch(() => null)
     if (response.status === 429) {
-      throw new AIError(errorData.error ?? "You've reached today's recording limit. Come back tomorrow!")
+      throw new AIError(errorData?.error ?? "You've reached today's recording limit. Come back tomorrow!")
     }
     if (response.status === 401) {
-      throw new AIError(errorData.error ?? 'Please sign in to record a story.')
+      throw new AIError(errorData?.error ?? 'Please sign in to record a story.')
     }
-    throw new AIError(errorData.error ?? `Request failed with status ${response.status}`)
+    if (response.status === 404) {
+      throw new AIError("Recording API isn't running. If you're developing locally, run `vercel dev` instead of `npm run dev`.")
+    }
+    throw new AIError(errorData?.error ?? `Request failed (status ${response.status}).`)
   }
 
   const data = await response.json() as TranscribeResult

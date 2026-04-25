@@ -77,6 +77,28 @@ body {
   animation: spinReverse 0.75s linear infinite;
 }
 
+/* Tutorial highlight — bright pulsing ring around the target element */
+@keyframes tutorialGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 4px rgba(217,93,57,0.55),
+      0 0 22px 6px rgba(217,93,57,0.55),
+      0 8px 32px rgba(217,93,57,0.45);
+  }
+  50% {
+    box-shadow:
+      0 0 0 8px rgba(217,93,57,0.25),
+      0 0 36px 12px rgba(217,93,57,0.85),
+      0 8px 32px rgba(217,93,57,0.55);
+  }
+}
+
+.tutorial-glow {
+  position: relative;
+  animation: tutorialGlow 1.6s ease-in-out infinite !important;
+  z-index: 20;
+}
+
 /* Hide scrollbars but keep scrolling */
 .scrollbar-hide {
   -ms-overflow-style: none;
