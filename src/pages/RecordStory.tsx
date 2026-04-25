@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { transcribeAndTranslate, blobToBase64 } from '@/lib/api'
-import { PromptBrowser } from '@/components/PromptBrowser'
 import { AppHeader } from '@/components/AppHeader'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { supabase } from '@/lib/supabase'
+import type { StoryPrompt } from '@/types/database'
 import { Mic, Square, Sparkles, Play, Pause } from 'lucide-react'
 
 const LANGUAGES = [
@@ -50,7 +51,11 @@ export default function RecordStory() {
   // Form state
   const [title, setTitle] = useState('')
   const [language, setLanguage] = useState('English')
-  const [showPrompts, setShowPrompts] = useState(false)
+
+  // Prompt strip
+  const [showPromptStrip, setShowPromptStrip] = useState(false)
+  const [prompts, setPrompts] = useState<StoryPrompt[]>([])
+  const [promptsLoading, setPromptsLoading] = useState(false)
 
   // Error
   const [error, setError] = useState('')
@@ -157,6 +162,15 @@ export default function RecordStory() {
     }
   }
 
+  const openPromptStrip = async () => {
+    setShowPromptStrip(prev => !prev)
+    if (prompts.length > 0) return
+    setPromptsLoading(true)
+    const { data } = await supabase.from('story_prompts').select('*').order('category')
+    if (data) setPrompts(data)
+    setPromptsLoading(false)
+  }
+
   const isProcessing = processingState !== 'idle'
 
   return (
@@ -190,15 +204,32 @@ export default function RecordStory() {
               </div>
             </div>
 
-            {/* Record button */}
-            <p className="text-[#D5D9EC]/60 text-sm mb-6">Press the button and start speaking.</p>
-
-            <button
-              onClick={startRecording}
-              className="w-40 h-40 rounded-full bg-[#D95D39] shadow-[0_8px_32px_rgba(217,93,57,0.5)] flex items-center justify-center hover:bg-[#B84A2A] active:scale-95 transition-all mb-4 group"
-            >
-              <Mic className="w-16 h-16 text-white group-hover:scale-110 transition-transform" />
-            </button>
+            {/* Record button with glow rings */}
+            <div className="relative flex items-center justify-center mb-6 mt-4">
+              {/* Outer decorative ring */}
+              <div
+                className="absolute w-56 h-56 rounded-full border border-[#D95D39]/20 pointer-events-none animate-glow-pulse-delay"
+              />
+              {/* Inner decorative ring */}
+              <div
+                className="absolute w-48 h-48 rounded-full border border-[#D95D39]/30 pointer-events-none animate-glow-pulse"
+              />
+              {/* Mic button */}
+              <button
+                onClick={startRecording}
+                className="relative w-36 h-36 rounded-full flex items-center justify-center active:scale-95 transition-transform duration-150 animate-pulse-ring"
+                style={{
+                  background: 'linear-gradient(145deg, #E06040, #C84828)',
+                }}
+              >
+                {/* Inset shine */}
+                <div
+                  className="absolute inset-0 rounded-full pointer-events-none"
+                  style={{ background: 'linear-gradient(145deg, rgba(255,255,255,0.18) 0%, transparent 60%)' }}
+                />
+                <Mic className="w-14 h-14 text-white relative z-10" />
+              </button>
+            </div>
 
             <p className="text-[#D95D39] font-semibold text-lg mb-8">Press to Record</p>
 
@@ -207,21 +238,71 @@ export default function RecordStory() {
               <div className="space-y-2">
                 <Label className="text-[#F5E9E0]">Story title (optional)</Label>
                 <Input
-                  placeholder="Leave blank — AI will suggest one"
+                  placeholder=""
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                 />
               </div>
             </div>
 
-            {/* Prompt browser */}
+            {/* Prompt strip trigger */}
             <button
-              onClick={() => setShowPrompts(true)}
-              className="flex items-center gap-2 text-[#D95D39] font-semibold text-base hover:opacity-75 transition-opacity"
+              onClick={openPromptStrip}
+              className="flex items-center gap-2 font-semibold text-sm px-4 py-2.5 rounded-full transition-all active:scale-95"
+              style={{
+                background: showPromptStrip ? 'rgba(217,93,57,0.18)' : 'rgba(217,93,57,0.08)',
+                border: '1px solid rgba(217,93,57,0.25)',
+                color: '#D95D39',
+              }}
             >
-              <Sparkles className="w-5 h-5" />
-              Need inspiration? ✨
+              <Sparkles className="w-4 h-4" />
+              Need inspiration?
             </button>
+
+            {/* Inline horizontal prompt strip */}
+            {showPromptStrip && (
+              <div className="w-full mt-3">
+                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                  {promptsLoading ? (
+                    <div className="flex items-center justify-center w-full py-6">
+                      <div className="w-5 h-5 border-2 border-[#D95D39] border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  ) : prompts.length === 0 ? (
+                    <p className="text-[#D5D9EC]/50 text-sm py-4 text-center w-full">No prompts available.</p>
+                  ) : (
+                    prompts.map(prompt => (
+                      <button
+                        key={prompt.id}
+                        onClick={() => {
+                          setTitle(prompt.prompt_text)
+                          setShowPromptStrip(false)
+                        }}
+                        className="flex-shrink-0 w-52 text-left rounded-2xl p-3 transition-all active:scale-95"
+                        style={{
+                          background: 'rgba(245,233,224,0.07)',
+                          border: '1px solid rgba(245,233,224,0.12)',
+                        }}
+                        onMouseEnter={e => {
+                          (e.currentTarget as HTMLButtonElement).style.background = 'rgba(217,93,57,0.12)'
+                          ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(217,93,57,0.3)'
+                        }}
+                        onMouseLeave={e => {
+                          (e.currentTarget as HTMLButtonElement).style.background = 'rgba(245,233,224,0.07)'
+                          ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(245,233,224,0.12)'
+                        }}
+                      >
+                        <div className="text-[10px] font-bold text-[#D95D39] uppercase tracking-wider mb-1.5">
+                          {prompt.category}
+                        </div>
+                        <div className="text-[#F5E9E0] text-xs leading-relaxed line-clamp-3">
+                          {prompt.prompt_text}
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -318,7 +399,7 @@ export default function RecordStory() {
                 <div className="space-y-2">
                   <Label className="text-[#F5E9E0]">Story title (optional)</Label>
                   <Input
-                    placeholder="Leave blank — AI will suggest one"
+                    placeholder=""
                     value={title}
                     onChange={e => setTitle(e.target.value)}
                   />
@@ -327,7 +408,7 @@ export default function RecordStory() {
             </div>
 
             {error && (
-              <div className="w-full bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-700 text-sm mb-4">
+              <div className="w-full bg-[#D95D39]/12 border border-[#D95D39]/35 rounded-xl px-4 py-3 text-[#F5E9E0] text-sm mb-4">
                 {error}
               </div>
             )}
@@ -347,7 +428,13 @@ export default function RecordStory() {
         {/* ── PROCESSING ── */}
         {isProcessing && (
           <div className="flex flex-col items-center justify-center w-full flex-1">
-            <div className="w-20 h-20 border-4 border-[#D95D39] border-t-transparent rounded-full animate-spin mb-8" />
+            {/* Dual counter-rotating spinner */}
+            <div className="relative w-20 h-20 mb-8">
+              <div className="absolute inset-0 rounded-full border-4 border-[#D95D39]/20 border-t-[#D95D39] animate-spin" />
+              <div
+                className="absolute inset-2 rounded-full border-4 border-[#D95D39]/10 border-b-[#D95D39] animate-spin-reverse"
+              />
+            </div>
             <p className="text-xl font-semibold text-[#F5E9E0] text-center">
               {PROCESSING_MESSAGES[processingState]}
             </p>
@@ -357,17 +444,12 @@ export default function RecordStory() {
 
         {/* Mic error (idle) */}
         {error && recordingState === 'idle' && (
-          <div className="w-full bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-700 text-sm mt-6">
+          <div className="w-full bg-[#D95D39]/12 border border-[#D95D39]/35 rounded-xl px-4 py-3 text-[#F5E9E0] text-sm mt-6">
             {error}
           </div>
         )}
       </div>
 
-      <PromptBrowser
-        open={showPrompts}
-        onClose={() => setShowPrompts(false)}
-        onSelect={text => { setTitle(text); setShowPrompts(false) }}
-      />
     </div>
   )
 }
