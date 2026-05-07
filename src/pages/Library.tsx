@@ -6,6 +6,8 @@ import type { Chapter, Story, FamilyMember, FamilyGroup } from '@/types/database
 import { StoryCard } from '@/components/StoryCard'
 import { ChapterModal } from '@/components/ChapterModal'
 import { TutorialBanner } from '@/components/TutorialBanner'
+import { InstallBanner } from '@/components/InstallBanner'
+import { useInstallPrompt } from '@/hooks/useInstallPrompt'
 import { Button } from '@/components/ui/button'
 import { useTutorial } from '@/hooks/useTutorial'
 import { initTutorial } from '@/lib/tutorial'
@@ -38,6 +40,7 @@ export default function Library() {
   const [copied, setCopied] = useState(false)
   const [search, setSearch] = useState('')
   const { step, advance, skip } = useTutorial()
+  const { platform: installPlatform, install, dismiss: dismissInstall } = useInstallPrompt()
 
   // Fetch everything
   const loadData = async () => {
@@ -430,6 +433,15 @@ export default function Library() {
           step={1}
           body="Tap the record button to capture your first story"
           onSkip={skip}
+        />
+      )}
+
+      {/* Install-to-home-screen banner — only after first story saved */}
+      {stories.length > 0 && step !== '1' && (
+        <InstallBanner
+          platform={installPlatform}
+          onInstall={install}
+          onDismiss={dismissInstall}
         />
       )}
 

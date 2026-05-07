@@ -6,7 +6,7 @@ import { AppHeader } from '@/components/AppHeader'
 import { Button } from '@/components/ui/button'
 import {
   Play, Pause, ArrowLeft,
-  Calendar, User, Mic,
+  Calendar, User, Mic, Trash2,
 } from 'lucide-react'
 
 export default function StoryDetail() {
@@ -19,6 +19,8 @@ export default function StoryDetail() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   // Audio player state
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -91,6 +93,28 @@ export default function StoryDetail() {
     if (memberRes.data) setMember(memberRes.data)
     if (chapterRes.data) setChapter(chapterRes.data)
     setLoading(false)
+  }
+
+  const handleDelete = async () => {
+    if (!story) return
+    setDeleting(true)
+
+    // Delete audio from storage if we have a path
+    if (story.audio_url) {
+      let storagePath: string | null = null
+      const publicMatch = story.audio_url.match(/\/storage\/v1\/object\/(?:public|sign)\/story-audio\/(.+?)(?:\?|$)/)
+      if (publicMatch) {
+        storagePath = decodeURIComponent(publicMatch[1])
+      } else if (!story.audio_url.startsWith('http')) {
+        storagePath = story.audio_url
+      }
+      if (storagePath) {
+        await supabase.storage.from('story-audio').remove([storagePath])
+      }
+    }
+
+    await supabase.from('stories').delete().eq('id', story.id)
+    navigate('/library')
   }
 
   const formatTime = (s: number) => {
@@ -175,6 +199,15 @@ export default function StoryDetail() {
         backTo="/library"
         title={story.title}
         subtitle={chapter ? `${chapter.title}` : undefined}
+        right={
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="p-2 rounded-xl text-[#F5E9E0]/50 hover:text-[#D95D39] hover:bg-[#F5E9E0]/08 transition-colors"
+            aria-label="Delete story"
+          >
+            <Trash2 className="w-5 h-5" />
+          </button>
+        }
       />
 
       <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-6 space-y-6">
@@ -317,6 +350,32 @@ export default function StoryDetail() {
           Back to Library
         </Button>
       </div>
+
+      {/* Delete confirmation dialog */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-6" style={{ background: 'rgba(0,0,0,0.6)' }}>
+          <div className="bg-[#3B2B3A] border border-[#F5E9E0]/10 rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+            <h2 className="text-[#F5E9E0] font-bold text-lg mb-2">Delete this story?</h2>
+            <p className="text-[#F5E9E0]/60 text-sm mb-6">This recording will be permanently deleted and cannot be recovered.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleting}
+                className="flex-1 py-2.5 rounded-xl border border-[#F5E9E0]/20 text-[#F5E9E0] text-sm font-semibold hover:bg-[#F5E9E0]/08 transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex-1 py-2.5 rounded-xl bg-[#D95D39] text-white text-sm font-semibold hover:bg-[#B84A2A] transition-colors disabled:opacity-50"
+              >
+                {deleting ? 'Deleting…' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
