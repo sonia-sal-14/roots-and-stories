@@ -12,6 +12,9 @@ import { supabase } from '@/lib/supabase'
 import type { StoryPrompt } from '@/types/database'
 import { Mic, Square, Sparkles, Play, Pause, RefreshCw, ArrowLeft } from 'lucide-react'
 
+const MAX_RECORDING_SECS = 30 * 60 // 30 minutes — adjust as needed
+const WARN_BEFORE_SECS = 2 * 60   // show warning with 2 minutes left
+
 const LANGUAGES = [
   // Global
   'English', 'Arabic', 'French', 'Mandarin', 'Portuguese', 'Spanish',
@@ -108,7 +111,16 @@ export default function RecordStory() {
       setRecordingState('recording')
       setElapsed(0)
 
-      timerRef.current = setInterval(() => setElapsed(prev => prev + 1), 1000)
+      timerRef.current = setInterval(() => {
+        setElapsed(prev => {
+          const next = prev + 1
+          if (next >= MAX_RECORDING_SECS) {
+            clearInterval(timerRef.current!)
+            mediaRecorderRef.current?.stop()
+          }
+          return next
+        })
+      }, 1000)
     } catch {
       setError('Microphone access is needed to record. Please allow access in your browser settings and try again.')
     }
@@ -430,9 +442,17 @@ export default function RecordStory() {
             </div>
 
             {/* Timer */}
-            <div className="text-5xl font-mono font-bold text-[#F5E9E0] mb-10">
+            <div className="text-5xl font-mono font-bold text-[#F5E9E0] mb-4">
               {formatTime(elapsed)}
             </div>
+
+            {/* Time limit warning */}
+            {elapsed >= MAX_RECORDING_SECS - WARN_BEFORE_SECS && (
+              <div className="text-[#D95D39] text-sm font-semibold mb-6">
+                {formatTime(MAX_RECORDING_SECS - elapsed)} remaining — recording will stop automatically
+              </div>
+            )}
+            {elapsed < MAX_RECORDING_SECS - WARN_BEFORE_SECS && <div className="mb-6" />}
 
             <button
               onClick={stopRecording}
