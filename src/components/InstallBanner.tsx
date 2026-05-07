@@ -1,4 +1,4 @@
-import { Share, X, Download, MoreVertical } from 'lucide-react'
+import { Share, X, Download } from 'lucide-react'
 import type { InstallPlatform } from '@/hooks/useInstallPrompt'
 
 interface InstallBannerProps {
@@ -46,7 +46,7 @@ export function InstallBanner({ platform, onInstall, onDismiss }: InstallBannerP
 
           {platform === 'ios-chrome' && (
             <div className="text-[#D5D9EC]/60 text-xs mt-0.5 leading-snug flex items-center gap-1 flex-wrap">
-              Tap <MoreVertical className="w-3 h-3 inline-block flex-shrink-0" /> then <strong className="text-[#D5D9EC]/80">Add to Home Screen</strong>
+              Tap <Share className="w-3 h-3 inline-block flex-shrink-0" /> then <strong className="text-[#D5D9EC]/80">View more</strong> → <strong className="text-[#D5D9EC]/80">Add to Home Screen</strong>
             </div>
           )}
 
